@@ -1,6 +1,20 @@
+import logging
 import shutil
 import subprocess
 from dataclasses import dataclass
+
+
+logger = logging.getLogger(__name__)
+
+
+@dataclass
+class CombinedSink:
+    """Module IDs for a combined PulseAudio sink."""
+
+    sink_id: int
+    input_loopback_id: int
+    monitor_loopback_id: int
+    monitor_source: str
 
 
 @dataclass
@@ -99,3 +113,129 @@ def find_running_source(sources: list[AudioSource]) -> AudioSource | None:
             return source
 
     return sources[0] if sources else None
+
+
+def create_combined_sink(input_source: str, monitor_source: str) -> CombinedSink:
+    """Create a null sink and loopbacks to combine two audio sources.
+
+    This creates a temporary PulseAudio sink that mixes microphone input
+    and system audio monitor into a single source for recording.
+
+    Args:
+        input_source: Name of the microphone source
+        monitor_source: Name of the system audio monitor source
+
+    Returns:
+        CombinedSink with module IDs and monitor source name
+
+    Raises:
+        RuntimeError: If pactl commands fail
+    """
+    sink_name = "kakitori_combined"
+
+    # Create null sink
+    logger.info("Creating combined PulseAudio sink")
+    result = subprocess.run(
+        [
+            "pactl",
+            "load-module",
+            "module-null-sink",
+            f"sink_name={sink_name}",
+            "sink_properties=device.description=Kakitori\\ Recording",
+            "rate=48000",
+            "channels=2",
+        ],
+        capture_output=True,
+        text=True,
+    )
+
+    if result.returncode != 0:
+        raise RuntimeError(f"Failed to create null sink: {result.stderr}")
+
+    sink_id = int(result.stdout.strip())
+    logger.debug(f"Created null sink with ID {sink_id}")
+
+    # Create loopback from input to null sink
+    result = subprocess.run(
+        [
+            "pactl",
+            "load-module",
+            "module-loopback",
+            f"source={input_source}",
+            f"sink={sink_name}",
+            "latency_msec=100",
+            "adjust_time=5",
+        ],
+        capture_output=True,
+        text=True,
+    )
+
+    if result.returncode != 0:
+        # Cleanup sink before raising
+        subprocess.run(["pactl", "unload-module", str(sink_id)])
+        raise RuntimeError(f"Failed to create input loopback: {result.stderr}")
+
+    input_loopback_id = int(result.stdout.strip())
+    logger.debug(f"Created input loopback with ID {input_loopback_id}")
+
+    # Create loopback from monitor to null sink
+    result = subprocess.run(
+        [
+            "pactl",
+            "load-module",
+            "module-loopback",
+            f"source={monitor_source}",
+            f"sink={sink_name}",
+            "latency_msec=100",
+            "adjust_time=5",
+        ],
+        capture_output=True,
+        text=True,
+    )
+
+    if result.returncode != 0:
+        # Cleanup both sink and first loopback before raising
+        subprocess.run(["pactl", "unload-module", str(input_loopback_id)])
+        subprocess.run(["pactl", "unload-module", str(sink_id)])
+        raise RuntimeError(f"Failed to create monitor loopback: {result.stderr}")
+
+    monitor_loopback_id = int(result.stdout.strip())
+    logger.debug(f"Created monitor loopback with ID {monitor_loopback_id}")
+
+    monitor_name = f"{sink_name}.monitor"
+    logger.info(f"Combined sink ready: {monitor_name}")
+
+    return CombinedSink(
+        sink_id=sink_id,
+        input_loopback_id=input_loopback_id,
+        monitor_loopback_id=monitor_loopback_id,
+        monitor_source=monitor_name,
+    )
+
+
+def cleanup_combined_sink(combined: CombinedSink) -> None:
+    """Unload the null sink and loopback modules.
+
+    Args:
+        combined: CombinedSink with module IDs to unload
+    """
+    logger.info("Cleaning up combined PulseAudio sink")
+
+    # Unload in reverse order: loopbacks first, then sink
+    for module_id in [
+        combined.monitor_loopback_id,
+        combined.input_loopback_id,
+        combined.sink_id,
+    ]:
+        result = subprocess.run(
+            ["pactl", "unload-module", str(module_id)],
+            capture_output=True,
+            text=True,
+        )
+
+        if result.returncode != 0:
+            logger.warning(f"Failed to unload module {module_id}: {result.stderr}")
+        else:
+            logger.debug(f"Unloaded module {module_id}")
+
+    logger.info("Combined sink cleanup complete")

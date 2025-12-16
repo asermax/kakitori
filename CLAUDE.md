@@ -76,9 +76,9 @@ The codebase follows a modular command-based architecture in `src/kakitori/`:
    - Backwards compatibility for `kakitori <file>` syntax
 
 3. **Record Command** (`record/`):
-   - `command.py`: Orchestrates recording workflow
-   - `sources.py`: PulseAudio/PipeWire source detection
-   - `recorder.py`: ffmpeg process control with signal handling
+   - `command.py`: Orchestrates recording workflow with combined sink lifecycle management
+   - `sources.py`: PulseAudio/PipeWire source detection, combined sink creation and cleanup
+   - `recorder.py`: ffmpeg process control with signal handling (single-source recording)
    - `ui.py`: Interactive source selection with questionary/rich
 
 4. **Process Command** (`process/`):
@@ -118,6 +118,7 @@ The codebase follows a modular command-based architecture in `src/kakitori/`:
 
 - **Subcommand CLI**: Separate `record` and `process` commands with backwards compatibility
 - **Command Packages**: Each command has its own package (record/, process/) with command logic and helpers
+- **PulseAudio Combined Sink**: Uses temporary null sink with loopbacks to mix microphone and system audio at the audio server level, eliminating timestamp synchronization issues that occur with dual-source ffmpeg mixing
 - **Structured Output**: Uses Pydantic models with Gemini's `response_schema` parameter for reliable JSON parsing
 - **Adaptive Snippets**: Speaker identification snippets adjust duration based on next segment to avoid overlap
 - **Interactive UI**: Uses questionary/rich for consistent interactive menus across speaker ID and source selection

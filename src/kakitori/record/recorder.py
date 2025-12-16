@@ -5,15 +5,13 @@ from pathlib import Path
 
 
 def start_recording(
-    input_source: str,
-    monitor_source: str,
+    source: str,
     output_path: Path,
 ) -> subprocess.Popen:
-    """Start ffmpeg recording process.
+    """Start ffmpeg recording process from a single PulseAudio source.
 
     Args:
-        input_source: PulseAudio input source name
-        monitor_source: PulseAudio monitor source name
+        source: PulseAudio source name (e.g., combined sink monitor)
         output_path: Path for output file
 
     Returns:
@@ -26,17 +24,7 @@ def start_recording(
         "-f",
         "pulse",
         "-i",
-        input_source,
-        "-thread_queue_size",
-        "1024",
-        "-f",
-        "pulse",
-        "-i",
-        monitor_source,
-        "-filter_complex",
-        "[0:a][1:a]amix=inputs=2:duration=longest[a]",
-        "-map",
-        "[a]",
+        source,
         "-c:a",
         "libopus",
         str(output_path),
@@ -60,15 +48,13 @@ def stop_recording(process: subprocess.Popen) -> None:
 
 
 def record_audio(
-    input_source: str,
-    monitor_source: str,
+    source: str,
     output_path: Path,
 ) -> bool:
     """Execute the full recording workflow with signal handling.
 
     Args:
-        input_source: PulseAudio input source name
-        monitor_source: PulseAudio monitor source name
+        source: PulseAudio source name (e.g., combined sink monitor)
         output_path: Final output path
 
     Returns:
@@ -76,7 +62,7 @@ def record_audio(
     """
     temp_path = Path("/tmp") / f"{output_path.stem}_temp{output_path.suffix}"
 
-    process = start_recording(input_source, monitor_source, temp_path)
+    process = start_recording(source, temp_path)
 
     interrupted = False
 

@@ -1,3 +1,4 @@
+import atexit
 from datetime import datetime
 from pathlib import Path
 
@@ -5,7 +6,13 @@ import questionary
 
 from kakitori.logging import logger
 from kakitori.record.recorder import record_audio
-from kakitori.record.sources import check_dependencies, find_running_source, get_sources
+from kakitori.record.sources import (
+    check_dependencies,
+    cleanup_combined_sink,
+    create_combined_sink,
+    find_running_source,
+    get_sources,
+)
 from kakitori.record.ui import confirm_sources, prompt_save_location
 
 
@@ -73,20 +80,35 @@ def run_record(output: str | None, api_key: str | None = None) -> Path | None:
             logger.info("Recording cancelled")
             return None
 
-    # Execute recording
-    logger.info("Starting recording... Press Ctrl+C to stop.")
-
-    success = record_audio(
-        input_source.name,
-        monitor_source.name,
-        output_path,
-    )
-
-    if not success:
-        logger.error("Recording failed")
+    # Create combined sink
+    try:
+        combined = create_combined_sink(input_source.name, monitor_source.name)
+    except RuntimeError as e:
+        logger.error(f"Failed to create combined sink: {e}")
         return None
 
-    logger.info(f"✓ Recording saved to: {output_path}")
+    # Register cleanup handler
+    atexit.register(cleanup_combined_sink, combined)
+
+    # Execute recording with cleanup
+    try:
+        logger.info("Starting recording... Press Ctrl+C to stop.")
+
+        success = record_audio(
+            combined.monitor_source,
+            output_path,
+        )
+
+        if not success:
+            logger.error("Recording failed")
+            return None
+
+        logger.info(f"✓ Recording saved to: {output_path}")
+
+    finally:
+        # Cleanup combined sink
+        atexit.unregister(cleanup_combined_sink)
+        cleanup_combined_sink(combined)
 
     # Prompt to transcribe
     if api_key is not None:
