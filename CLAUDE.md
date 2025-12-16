@@ -4,7 +4,25 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Kakitori is a CLI tool for audio transcription with speaker diarization using Google's Gemini Flash model. It provides an interactive workflow where users can listen to audio snippets and assign names to speakers.
+Kakitori is a CLI tool for audio recording and transcription with speaker diarization using Google's Gemini Flash model. It provides:
+- Audio recording from microphone and system audio (PulseAudio/PipeWire + ffmpeg)
+- Interactive workflow for speaker identification with audio snippet playback
+- Transcription using Google's Gemini Flash model
+
+## Command Line Interface
+
+Kakitori uses a subcommand-based CLI:
+
+```bash
+# Record new audio
+kakitori record [-o OUTPUT] [-v]
+
+# Process existing audio file
+kakitori process <file> [-o OUTPUT] [--stdout] [--skip-speaker-id] [-v]
+
+# Backwards compatible (same as process)
+kakitori <file> [options]
+```
 
 ## Development Commands
 
@@ -13,7 +31,13 @@ Kakitori is a CLI tool for audio transcription with speaker diarization using Go
 # Install dependencies
 uv sync
 
-# Run the tool locally
+# Run the tool locally - record
+uv run kakitori record
+
+# Run the tool locally - process
+uv run kakitori process recording.mp3
+
+# Backwards compatible
 uv run kakitori recording.mp3
 
 # Install as a tool (for testing the installed version)
@@ -38,53 +62,68 @@ API key is required: `GEMINI_API_KEY=your-key`
 
 ### Module Structure
 
-The codebase follows a modular pipeline architecture in `src/kakitori/`:
+The codebase follows a modular command-based architecture in `src/kakitori/`:
 
 1. **Entry Point** (`__init__.py`):
    - Loads configuration from multiple sources (system env > local .env > global config)
-   - Orchestrates the main workflow: transcribe → identify speakers → format → save/output
+   - Dispatches to subcommands: `record` or `process`
    - Sets up logging based on verbose flag
 
 2. **CLI** (`cli.py`):
-   - Argument parsing with argparse
-   - Validates audio file exists before proceeding
+   - Subcommand-based argument parsing with argparse
+   - `record` subcommand for audio recording
+   - `process` subcommand for transcription
+   - Backwards compatibility for `kakitori <file>` syntax
 
-3. **Transcription** (`transcribe.py`):
+3. **Record Command** (`record/`):
+   - `command.py`: Orchestrates recording workflow
+   - `sources.py`: PulseAudio/PipeWire source detection
+   - `recorder.py`: ffmpeg process control with signal handling
+   - `ui.py`: Interactive source selection with questionary/rich
+
+4. **Process Command** (`process/`):
+   - `command.py`: Orchestrates transcription workflow (transcribe → identify speakers → format → save)
+
+5. **Transcription** (`transcribe.py`):
    - Uploads audio to Gemini API
    - Uses Gemini Flash with structured output (Pydantic schema) for JSON responses
    - Currently configured: `gemini-flash-latest`, `max_output_tokens=65536` (supports ~2hr meetings)
    - Returns `(Transcription, file_name)` tuple for cleanup
 
-4. **Speaker Identification** (`speaker.py`):
+6. **Speaker Identification** (`speaker.py`):
    - `identify_speakers()`: Interactive loop that plays audio snippets for each speaker
    - `get_snippet_duration()`: Calculates adaptive snippet duration (max 5s, bounded by next segment)
    - `apply_speaker_names()`: Maps generic labels (Speaker 1, Speaker 2) to user-provided names
 
-5. **Audio Playback** (`audio.py`):
+7. **Audio Playback** (`audio.py`):
    - Uses `python-mpv` library to play audio snippets
    - `parse_timestamp()`: Converts MM:SS format to seconds
    - `play_snippet()`: Plays audio from start_seconds for specified duration
 
-6. **Data Models** (`models.py`):
+8. **Data Models** (`models.py`):
    - Pydantic models used as structured output schema for Gemini API
    - `TranscriptSegment`: Single segment with start_time, speaker, content
    - `Transcription`: List of segments
 
-7. **Output Formatting** (`output.py`):
+9. **Output Formatting** (`output.py`):
    - Formats transcription as plain text with timestamps and speaker names
    - Format: `[MM:SS] Speaker: content`
 
-8. **Logging** (`logging.py`):
-   - Configured to output to stderr (keeps stdout clean for transcript output)
-   - INFO level by default, DEBUG level with `-v` flag
-   - Format: `[LEVEL] message`
+10. **Logging** (`logging.py`):
+    - Configured to output to stderr (keeps stdout clean for transcript output)
+    - INFO level by default, DEBUG level with `-v` flag
+    - Format: `[LEVEL] message`
 
 ### Key Design Decisions
 
+- **Subcommand CLI**: Separate `record` and `process` commands with backwards compatibility
+- **Command Packages**: Each command has its own package (record/, process/) with command logic and helpers
 - **Structured Output**: Uses Pydantic models with Gemini's `response_schema` parameter for reliable JSON parsing
 - **Adaptive Snippets**: Speaker identification snippets adjust duration based on next segment to avoid overlap
+- **Interactive UI**: Uses questionary/rich for consistent interactive menus across speaker ID and source selection
 - **Config Priority**: Supports global config directory to avoid per-directory .env files while allowing local overrides
 - **Logging to stderr**: All logs go to stderr so `--stdout` flag can output clean transcript to stdout for piping
+- **Optional Transcription**: After recording, prompts user to transcribe immediately (requires GEMINI_API_KEY)
 
 ## Dependencies
 
@@ -96,4 +135,6 @@ The codebase follows a modular pipeline architecture in `src/kakitori/`:
 ## System Requirements
 
 - Python 3.11+
-- `mpv` media player must be installed on the system for audio playback
+- `mpv` media player (for audio snippet playback during speaker identification)
+- `pactl` (PulseAudio/PipeWire utils - for audio recording)
+- `ffmpeg` with PulseAudio support (for audio recording)
