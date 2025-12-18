@@ -8,8 +8,11 @@ from kakitori.logging import logger
 from kakitori.models import Transcription
 
 
-TRANSCRIPTION_PROMPT = """
+TRANSCRIPTION_PROMPT_TEMPLATE = """
 Transcribe this audio recording with detailed speaker diarization.
+
+Context:
+- This recording has exactly {participant_count} participant(s)
 
 Requirements:
 1. Identify each unique speaker with their actual name when possible:
@@ -26,12 +29,15 @@ Output the transcription in the specified JSON schema format.
 """.strip()
 
 
-def transcribe_audio(audio_path: str, api_key: str) -> tuple[Transcription, str]:
+def transcribe_audio(
+    audio_path: str, api_key: str, participant_count: int
+) -> tuple[Transcription, str]:
     """Transcribe an audio file using Gemini with speaker diarization.
 
     Args:
         audio_path: Path to the audio file
         api_key: Gemini API key
+        participant_count: Number of participants in the recording
 
     Returns:
         Tuple of (Transcription object, file_name for cleanup)
@@ -82,9 +88,11 @@ def transcribe_audio(audio_path: str, api_key: str) -> tuple[Transcription, str]
     logger.info("Generating transcription...")
     logger.debug("Model: gemini-flash-latest, temperature: 0.0, max_tokens: 65536")
 
+    prompt = TRANSCRIPTION_PROMPT_TEMPLATE.format(participant_count=participant_count)
+
     response = client.models.generate_content(
         model="gemini-flash-latest",
-        contents=[audio_file, TRANSCRIPTION_PROMPT],
+        contents=[audio_file, prompt],
         config=types.GenerateContentConfig(
             response_mime_type="application/json",
             response_schema=Transcription,

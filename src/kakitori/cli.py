@@ -93,6 +93,14 @@ def _add_process_arguments(parser: argparse.ArgumentParser) -> None:
         help="Skip interactive speaker identification (keep generic labels)",
     )
 
+    parser.add_argument(
+        "-p",
+        "--participants",
+        type=int,
+        default=None,
+        help="Number of participants in the audio (prompts if not provided)",
+    )
+
 
 def _parse_legacy_args() -> argparse.Namespace:
     """Parse arguments for backwards compatibility (no subcommand).

@@ -2,6 +2,7 @@ import os
 import sys
 from pathlib import Path
 
+import questionary
 from dotenv import dotenv_values
 
 from kakitori.cli import parse_args
@@ -89,6 +90,17 @@ def _run_process_command(args) -> None:
 
     from kakitori.process import run_process
 
+    # Prompt for participant count if not provided
+    participant_count = args.participants
+
+    if participant_count is None:
+        participant_count = int(
+            questionary.text(
+                "How many participants are in this recording?",
+                validate=lambda x: x.isdigit() and int(x) > 0,
+            ).ask()
+        )
+
     try:
         run_process(
             audio_file=args.audio_file,
@@ -96,6 +108,7 @@ def _run_process_command(args) -> None:
             output=args.output,
             stdout=args.stdout,
             skip_speaker_id=args.skip_speaker_id,
+            participant_count=participant_count,
         )
 
     except KeyboardInterrupt:

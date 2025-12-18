@@ -12,6 +12,7 @@ def run_process(
     output: str | None,
     stdout: bool,
     skip_speaker_id: bool,
+    participant_count: int,
 ) -> None:
     """Execute the transcription processing workflow.
 
@@ -21,9 +22,10 @@ def run_process(
         output: Custom output path or None
         stdout: Whether to print to stdout
         skip_speaker_id: Whether to skip speaker identification
+        participant_count: Number of participants in the recording
     """
     # Step 1: Transcribe audio
-    transcription, file_name = transcribe_audio(audio_file, api_key)
+    transcription, file_name = transcribe_audio(audio_file, api_key, participant_count)
 
     # Step 2: Interactive speaker identification (unless skipped)
     if not skip_speaker_id:
