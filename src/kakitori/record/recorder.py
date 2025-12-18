@@ -75,12 +75,14 @@ def record_audio(
         interrupted = True
         stop_recording(process)
 
-    signal.signal(signal.SIGINT, handle_interrupt)
+    original_handler = signal.signal(signal.SIGINT, handle_interrupt)
 
     try:
         process.wait()
     except KeyboardInterrupt:
         pass
+    finally:
+        signal.signal(signal.SIGINT, original_handler)
 
     if not temp_path.exists():
         return False

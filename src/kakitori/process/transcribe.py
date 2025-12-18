@@ -12,7 +12,11 @@ TRANSCRIPTION_PROMPT = """
 Transcribe this audio recording with detailed speaker diarization.
 
 Requirements:
-1. Identify each unique speaker and assign a consistent ID (Speaker 1, Speaker 2, etc.)
+1. Identify each unique speaker with their actual name when possible:
+   - Listen for names mentioned in conversation (e.g., "Hey John, what do you think?")
+   - Listen for self-introductions (e.g., "I'm Sarah from...")
+   - Once a name is detected, use it consistently for ALL that speaker's segments
+   - Only use generic labels (Speaker 1, Speaker 2, etc.) when no name can be inferred
 2. Include start timecode (MM:SS format) for each speech segment
 3. Transcribe verbatim, preserving the original speech accurately
 4. Ensure numerical values are transcribed precisely

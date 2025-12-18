@@ -1,3 +1,4 @@
+import re
 from dataclasses import dataclass
 
 import questionary
@@ -11,6 +12,18 @@ from kakitori.models import Transcription, TranscriptSegment
 
 # Pagination constant
 SEGMENTS_PER_PAGE = 10
+
+
+def _is_generic_speaker_label(label: str) -> bool:
+    """Check if speaker label is a generic pattern (e.g., 'Speaker 1').
+
+    Args:
+        label: Speaker label from transcription
+
+    Returns:
+        True if label matches generic pattern, False if it looks like a name
+    """
+    return bool(re.match(r"^Speaker \d+$", label))
 
 
 @dataclass
@@ -75,10 +88,11 @@ def _build_speaker_states(
         speaker_indices[segment.speaker].append(idx)
 
     # Sort by speaker label and keep all segment indices
+    # Pre-populate assigned_name for detected names (non-generic labels)
     return [
         SpeakerState(
             label=speaker,
-            assigned_name=None,
+            assigned_name=speaker if not _is_generic_speaker_label(speaker) else None,
             segment_indices=indices,
         )
         for speaker, indices in sorted(speaker_indices.items())
@@ -329,7 +343,13 @@ def _show_speaker_detail_menu(
             page -= 1
 
         elif result == "assign":
-            name = questionary.text(f"Who is {speaker_state.label}?").ask()
+            # Pre-fill with speaker label if it's a detected name
+            default_name = speaker_state.label if not _is_generic_speaker_label(speaker_state.label) else ""
+
+            name = questionary.text(
+                f"Who is {speaker_state.label}?",
+                default=default_name
+            ).ask()
 
             if name and name.strip():
                 return name.strip()
