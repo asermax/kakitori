@@ -5,7 +5,7 @@ from questionary import Choice, Separator
 from rich.console import Console
 from rich.table import Table
 
-from kakitori.audio import parse_timestamp, play_snippet
+from .audio import parse_timestamp, play_snippet
 from kakitori.logging import logger
 from kakitori.models import Transcription, TranscriptSegment
 

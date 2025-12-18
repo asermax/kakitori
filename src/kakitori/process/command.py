@@ -1,9 +1,9 @@
 from pathlib import Path
 
 from kakitori.logging import logger
-from kakitori.output import format_transcript
-from kakitori.speaker import apply_speaker_names, identify_speakers
-from kakitori.transcribe import cleanup_file, transcribe_audio
+from .output import format_transcript
+from .speaker import apply_speaker_names, identify_speakers
+from .transcribe import cleanup_file, transcribe_audio
 
 
 def run_process(
