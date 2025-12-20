@@ -86,12 +86,12 @@ def transcribe_audio(
 
     # Generate transcription with structured output
     logger.info("Generating transcription...")
-    logger.debug("Model: gemini-flash-latest, temperature: 0.0, max_tokens: 65536")
+    logger.debug("Model: gemini-3-flash-preview, temperature: 0.0, max_tokens: 65536")
 
     prompt = TRANSCRIPTION_PROMPT_TEMPLATE.format(participant_count=participant_count)
 
     response = client.models.generate_content(
-        model="gemini-flash-latest",
+        model="gemini-3-flash-preview",
         contents=[audio_file, prompt],
         config=types.GenerateContentConfig(
             response_mime_type="application/json",
