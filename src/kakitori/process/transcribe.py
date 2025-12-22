@@ -13,6 +13,8 @@ Transcribe this audio recording with detailed speaker diarization.
 
 Context:
 - This recording has exactly {participant_count} participant(s)
+- Transcribe approximately 20 minutes of audio per response
+- If there is no more audio to transcribe, return an empty segments array
 
 Requirements:
 1. Identify each unique speaker with their actual name when possible:
@@ -26,6 +28,12 @@ Requirements:
 5. Maintain consistency in speaker attribution throughout
 
 Output the transcription in the specified JSON schema format.
+""".strip()
+
+
+CONTINUATION_PROMPT = """
+Continue transcribing from where you left off.
+If there is no more audio to transcribe, return an empty segments array.
 """.strip()
 
 
@@ -84,15 +92,13 @@ def transcribe_audio(
 
     logger.debug("Audio file processed successfully")
 
-    # Generate transcription with structured output
-    logger.info("Generating transcription...")
+    # Generate transcription using multi-turn for long recordings
+    logger.info("Starting multi-turn transcription...")
     logger.debug("Model: gemini-3-flash-preview, temperature: 0.3, max_tokens: 65536")
 
-    prompt = TRANSCRIPTION_PROMPT_TEMPLATE.format(participant_count=participant_count)
-
-    response = client.models.generate_content(
+    # Create chat session with structured output config
+    chat = client.chats.create(
         model="gemini-3-flash-preview",
-        contents=[audio_file, prompt],
         config=types.GenerateContentConfig(
             response_mime_type="application/json",
             response_schema=Transcription,
@@ -101,11 +107,15 @@ def transcribe_audio(
         ),
     )
 
-    logger.debug(f"API response received: {response}")
-    logger.debug(f"Response text: {response.text[:500] if response.text else 'None'}...")
+    all_segments = []
+    turn = 1
+
+    # First turn with audio + initial prompt
+    logger.info(f"Transcription turn {turn}...")
+    initial_prompt = TRANSCRIPTION_PROMPT_TEMPLATE.format(participant_count=participant_count)
+    response = chat.send_message([audio_file, initial_prompt])
 
     transcription = response.parsed
-
     if not transcription:
         # Get finish reason if available
         finish_reason = None
@@ -113,15 +123,44 @@ def transcribe_audio(
             finish_reason = response.candidates[0].finish_reason
 
         raise Exception(
-            f"Failed to parse transcription response\n"
+            f"Failed to parse transcription response (turn {turn})\n"
             f"Finish reason: {finish_reason}\n"
             f"Response text:\n{response.text}"
         )
 
-    logger.info(f"Transcription complete: {len(transcription.segments)} segments")
-    logger.debug(f"Segments: {[s.speaker for s in transcription.segments]}")
+    all_segments.extend(transcription.segments)
+    logger.info(f"Turn {turn}: {len(transcription.segments)} segments")
 
-    return transcription, audio_file.name
+    # Continue until empty array
+    while transcription.segments:
+        turn += 1
+        logger.info(f"Transcription turn {turn}...")
+        response = chat.send_message(CONTINUATION_PROMPT)
+
+        transcription = response.parsed
+        if not transcription:
+            # Get finish reason if available
+            finish_reason = None
+            if response.candidates:
+                finish_reason = response.candidates[0].finish_reason
+
+            raise Exception(
+                f"Failed to parse transcription response (turn {turn})\n"
+                f"Finish reason: {finish_reason}\n"
+                f"Response text:\n{response.text}"
+            )
+
+        if transcription.segments:
+            all_segments.extend(transcription.segments)
+            logger.info(f"Turn {turn}: {len(transcription.segments)} segments")
+        else:
+            logger.info(f"Turn {turn}: empty array, transcription complete")
+
+    final_transcription = Transcription(segments=all_segments)
+    logger.info(f"Transcription complete: {len(all_segments)} segments across {turn} turns")
+    logger.debug(f"Speakers: {set(s.speaker for s in all_segments)}")
+
+    return final_transcription, audio_file.name
 
 
 def cleanup_file(api_key: str, file_name: str) -> None:
