@@ -120,6 +120,14 @@ def run_record(output: str | None, api_key: str | None = None) -> Path | None:
         if should_transcribe:
             from kakitori.process import run_process
 
+            # Prompt for participant count
+            participant_count = int(
+                questionary.text(
+                    "How many participants are in this recording?",
+                    validate=lambda x: x.isdigit() and int(x) > 0,
+                ).ask()
+            )
+
             logger.info("\nStarting transcription...")
 
             run_process(
@@ -128,6 +136,7 @@ def run_record(output: str | None, api_key: str | None = None) -> Path | None:
                 output=None,
                 stdout=False,
                 skip_speaker_id=False,
+                participant_count=participant_count,
             )
 
     return output_path

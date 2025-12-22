@@ -107,7 +107,16 @@ def transcribe_audio(
     transcription = response.parsed
 
     if not transcription:
-        raise Exception("Failed to parse transcription response")
+        # Get finish reason if available
+        finish_reason = None
+        if response.candidates:
+            finish_reason = response.candidates[0].finish_reason
+
+        raise Exception(
+            f"Failed to parse transcription response\n"
+            f"Finish reason: {finish_reason}\n"
+            f"Response text:\n{response.text}"
+        )
 
     logger.info(f"Transcription complete: {len(transcription.segments)} segments")
     logger.debug(f"Segments: {[s.speaker for s in transcription.segments]}")
