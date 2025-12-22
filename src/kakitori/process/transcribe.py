@@ -86,7 +86,7 @@ def transcribe_audio(
 
     # Generate transcription with structured output
     logger.info("Generating transcription...")
-    logger.debug("Model: gemini-3-flash-preview, temperature: 0.0, max_tokens: 65536")
+    logger.debug("Model: gemini-3-flash-preview, temperature: 0.3, max_tokens: 65536")
 
     prompt = TRANSCRIPTION_PROMPT_TEMPLATE.format(participant_count=participant_count)
 
@@ -96,7 +96,7 @@ def transcribe_audio(
         config=types.GenerateContentConfig(
             response_mime_type="application/json",
             response_schema=Transcription,
-            temperature=0.0,
+            temperature=0.3,  # Low but non-zero to prevent repetition loops
             max_output_tokens=65536,
         ),
     )
