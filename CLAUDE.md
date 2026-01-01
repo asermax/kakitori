@@ -2,6 +2,27 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Quick Context
+
+Kakitori is a CLI tool for audio recording and transcription with speaker diarization using Google's Gemini Flash model.
+
+## Key Files
+
+- `planning/VISION.md` - Project vision and scope
+- `planning/FEATURES.md` - Feature inventory with status
+- `planning/DEPENDENCIES.md` - Implementation phases
+- `specs/` - Feature specifications
+
+## Available Commands
+
+Use `/katachi:` commands to work with the framework.
+
+## Current Focus
+
+All features are implemented. Use `/katachi:analyze` for gap analysis.
+
+---
+
 ## Project Overview
 
 Kakitori is a CLI tool for audio recording and transcription with speaker diarization using Google's Gemini Flash model. It provides:
