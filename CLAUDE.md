@@ -12,14 +12,15 @@ Kakitori is a CLI tool for audio recording and transcription with speaker diariz
 - `planning/FEATURES.md` - Feature inventory with status
 - `planning/DEPENDENCIES.md` - Implementation phases
 - `specs/` - Feature specifications
+- `docs/framework.md` - Development framework documentation
 
 ## Available Commands
 
-Use `/katachi:` commands to work with the framework.
+Use `/vision`, `/features`, `/spec-feature`, `/design-feature`, `/plan-feature`, `/implement-feature` and other framework commands. See `docs/framework.md` for the full workflow.
 
 ## Current Focus
 
-All features are implemented. Use `/katachi:analyze` for gap analysis.
+All features are implemented. Use `/analyze` for gap analysis.
 
 ---
 
