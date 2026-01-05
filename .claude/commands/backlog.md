@@ -1,10 +1,18 @@
+---
+description: Manage bugs, ideas, improvements, tech-debt, and questions
+argument-hint: [action, ID, or description]
+---
+
 # Backlog Management
 
 Manage backlog items interactively with duplicate detection, refinement, and guided workflows.
 
 ## Input
 
-$ARGUMENTS - Optional: action and arguments (e.g., "add bug clipboard issue", "show BUG-001", "work IDEA-001")
+$ARGUMENTS - Optional, can be:
+- **Action**: `add bug clipboard issue`, `show BUG-001`, `list --priority 1-2`
+- **ID only**: `BUG-001` (auto-detects as "work on this item")
+- **Natural language**: `there's a bug with the clipboard` (auto-detects type and action)
 
 ## Context
 
