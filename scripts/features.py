@@ -519,8 +519,25 @@ class StatusManager:
         status_filter: Optional[str] = None,
         dm: Optional[DependencyMatrix] = None
     ):
-        """List features with optional filtering"""
+        """List features with optional filtering, grouped by phase"""
         print("\nFeatures:")
+
+        # If no dependency matrix, fall back to flat list
+        if not dm:
+            for feature_id in sorted(self.features.keys()):
+                feature = self.features[feature_id]
+
+                if category and not feature_id.startswith(f"{category}-"):
+                    continue
+                if status_filter and status_filter.lower() not in feature['status'].lower():
+                    continue
+
+                print(f"  {feature_id:12} {feature['status']}")
+            return
+
+        # Collect features by phase
+        phase_groups: Dict[Optional[int], List[str]] = {}
+
         for feature_id in sorted(self.features.keys()):
             feature = self.features[feature_id]
 
@@ -529,18 +546,31 @@ class StatusManager:
                 continue
             if status_filter and status_filter.lower() not in feature['status'].lower():
                 continue
-            if phase is not None and dm:
-                feature_phase = dm.get_phase(feature_id)
-                if feature_phase != phase:
-                    continue
 
-            # Get phase info if dm is provided
-            phase_info = ""
-            if dm:
-                feature_phase = dm.get_phase(feature_id)
-                phase_info = f" | Phase {feature_phase if feature_phase else '?'}"
+            feature_phase = dm.get_phase(feature_id)
 
-            print(f"  {feature_id:12} {feature['status']:20}{phase_info}")
+            if phase is not None and feature_phase != phase:
+                continue
+
+            if feature_phase not in phase_groups:
+                phase_groups[feature_phase] = []
+            phase_groups[feature_phase].append(feature_id)
+
+        # Print phases in order
+        numeric_phases = sorted([p for p in phase_groups.keys() if p is not None])
+
+        for p in numeric_phases:
+            print(f"\nPhase {p}:")
+            for feature_id in phase_groups[p]:
+                feature = self.features[feature_id]
+                print(f"  {feature_id:12} {feature['status']}")
+
+        # Print unphased at the end
+        if None in phase_groups:
+            print("\nUnphased:")
+            for feature_id in phase_groups[None]:
+                feature = self.features[feature_id]
+                print(f"  {feature_id:12} {feature['status']}")
 
     def show_feature(self, feature_id: str, dm: Optional[DependencyMatrix] = None):
         """Show detailed status for a feature"""
