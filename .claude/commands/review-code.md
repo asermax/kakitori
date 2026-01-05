@@ -26,7 +26,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
 
 **Review-specific guidance:**
 
-**Use a scratchpad** - Track state in `/tmp/review-code-state.md`:
+**Use a scratchpad** - Track state in `/tmp/review-code-<animal-adjective>-state.md` (generate unique ID):
 - Request type (bug, improvement, compliance check, question)
 - Affected files identified
 - Relevant decisions (ADRs/DES) that apply

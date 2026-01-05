@@ -27,7 +27,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
 
 **Decision-specific guidance:**
 
-**Use a scratchpad** - Track state in `/tmp/decision-state.md`:
+**Use a scratchpad** - Track state in `/tmp/decision-<animal-adjective>-state.md` (generate unique ID):
 - Current decision being worked on (ADR/DES ID and title)
 - Questions asked and answered
 - Alternatives discussed

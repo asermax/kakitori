@@ -58,8 +58,31 @@ Throughout the entire process:
 ### 5. Use a Scratchpad
 
 Track state in `/tmp/<command>-state.md`:
+
+**Commands with natural IDs:**
 - For `-feature` commands, include the feature ID: `/tmp/<command>-<FEATURE-ID>-state.md`
-  - Example: `/tmp/spec-CORE-001-state.md`, `/tmp/design-CORE-001-state.md`
+  - `/spec-feature`: `/tmp/spec-<FEATURE-ID>-state.md`
+  - `/design-feature`: `/tmp/design-<FEATURE-ID>-state.md`
+  - `/plan-feature`: `/tmp/plan-<FEATURE-ID>-state.md`
+  - `/implement-feature`: `/tmp/implement-<FEATURE-ID>-state.md`
+
+**Commands without natural IDs (parallel execution support):**
+- Generate unique animal-adjective ID: `/tmp/<command>-<animal-adjective>-state.md`
+  - `/add-feature`: `/tmp/add-feature-<animal-adjective>-state.md`
+  - `/analyze`: `/tmp/analyze-<animal-adjective>-state.md`
+  - `/analyze-impact`: `/tmp/analyze-impact-<animal-adjective>-state.md`
+  - `/decision`: `/tmp/decision-<animal-adjective>-state.md`
+  - `/review-code`: `/tmp/review-code-<animal-adjective>-state.md`
+  - Enables multiple concurrent sessions without state file conflicts
+  - Keep state files after completion (don't auto-clean) for debugging/audit trail
+
+**Commands that don't need parallel support:**
+- `/vision`, `/features`, `/dependencies` - Sequential execution sufficient, use `/tmp/<command>-state.md`
+
+**Commands without scratchpads:**
+- `/commit`, `/record-learnings` - No scratchpad needed
+
+**Scratchpad contents:**
 - Current section/phase being worked on
 - Questions asked and answered
 - Gaps identified

@@ -31,7 +31,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
 
 **Add-feature specific guidance:**
 
-**Use a scratchpad** - Track state in `/tmp/add-feature-state.md`:
+**Use a scratchpad** - Track state in `/tmp/add-feature-<animal-adjective>-state.md` (generate unique ID):
 - Feature description being captured
 - Category proposed
 - ID assigned

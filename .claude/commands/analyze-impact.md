@@ -35,7 +35,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
 
 **Impact analysis specific guidance:**
 
-**Use a scratchpad** - Track state in `/tmp/analyze-impact-state.md`:
+**Use a scratchpad** - Track state in `/tmp/analyze-impact-<animal-adjective>-state.md` (generate unique ID):
 - Change description being analyzed
 - Affected features identified
 - Documents requiring updates

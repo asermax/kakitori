@@ -7,6 +7,8 @@ description: Review project state, find gaps, assess change impact
 Review project state, find gaps, assess change impact.
 
 ## Context
+
+**Framework reference:**
 @docs/framework.md
 @planning/VISION.md
 @planning/FEATURES.md
@@ -15,6 +17,22 @@ Review project state, find gaps, assess change impact.
 @docs/design/README.md
 
 Read all specs and plans in specs/ and plans/ directories.
+
+**Command guidance principles:**
+@docs/command-guidance.md - Core principles for collaborative command workflows
+
+## General Guidance
+
+Follow the collaborative workflow principles in @docs/command-guidance.md.
+
+**Analyze-specific guidance:**
+
+**Use a scratchpad** - Track state in `/tmp/analyze-<animal-adjective>-state.md` (generate unique ID):
+- Analysis type (gap analysis or change impact)
+- Areas being examined
+- Gaps/issues identified
+- Impact findings
+- Recommendations proposed
 
 ## Process
 
