@@ -11,6 +11,21 @@ Add a new feature to the project without requiring full upfront planning.
 
 Feature description: $ARGUMENTS (optional - will prompt if not provided)
 
+Can also be a **backlog item ID** (typically IDEA-XXX) to promote to a feature.
+
+## Backlog Integration
+
+If a backlog item ID is provided (e.g., `/add-feature IDEA-001`):
+
+1. **Load item context**
+   - Run `python scripts/backlog.py show <ID>` to get item details
+   - Use title and notes as initial feature description
+   - If item has related features, consider as potential dependencies
+
+2. **After feature added**
+   - Prompt: "Mark <ID> as promoted?"
+   - If yes: Run `python scripts/backlog.py promote <ID> --feature <FEATURE-ID>`
+
 ## Context
 
 **Framework reference:**

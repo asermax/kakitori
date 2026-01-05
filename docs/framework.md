@@ -69,7 +69,8 @@ project/
 ├── planning/
 │   ├── VISION.md
 │   ├── FEATURES.md
-│   └── DEPENDENCIES.md
+│   ├── DEPENDENCIES.md
+│   └── BACKLOG.md
 ├── specs/
 │   └── FEATURE-ID.md             # What to build
 ├── designs/
@@ -89,6 +90,7 @@ project/
 | **Architecture Decision** (`docs/architecture/`) | Hard-to-change decisions (platform, language) | Project-wide |
 | **Design Pattern** (`docs/design/`) | Cross-cutting patterns & conventions | Project-wide |
 | **Dependencies** (`planning/DEPENDENCIES.md`) | WHEN to build (phases) | Project-wide |
+| **Backlog** (`planning/BACKLOG.md`) | Bugs, ideas, improvements, tech-debt, questions | Project-wide |
 
 ### Feature-Specific vs Project-Wide
 
@@ -101,6 +103,27 @@ project/
 - Apply across multiple features
 - Establish consistency and standards
 - Evolved from successful feature-specific approaches
+
+### Backlog vs Features
+
+**Features** (`planning/FEATURES.md`):
+- Well-defined units of functionality
+- Have specs, designs, plans
+- Follow the full implementation workflow
+
+**Backlog** (`planning/BACKLOG.md`):
+- Items not ready for full feature treatment
+- Bugs, ideas, improvements, tech-debt, questions
+- May be promoted to features or resolved directly
+- Use `/backlog` command or `scripts/backlog.py` to manage
+
+| Type | Prefix | Typical Resolution |
+|------|--------|-------------------|
+| Bug | `BUG-` | `/review-code BUG-ID` |
+| Idea | `IDEA-` | `/add-feature IDEA-ID` |
+| Improvement | `IMP-` | `/review-code IMP-ID` |
+| Tech Debt | `DEBT-` | `/review-code DEBT-ID` |
+| Question | `Q-` | `/decision Q-ID` |
 
 ## Progressive Disclosure
 

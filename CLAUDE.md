@@ -11,12 +11,34 @@ Kakitori is a CLI tool for audio recording and transcription with speaker diariz
 - `planning/VISION.md` - Project vision and scope
 - `planning/FEATURES.md` - Feature inventory with status
 - `planning/DEPENDENCIES.md` - Implementation phases
+- `planning/BACKLOG.md` - Bugs, ideas, improvements, tech-debt, questions
 - `specs/` - Feature specifications
 - `docs/framework.md` - Development framework documentation
 
 ## Available Commands
 
 Use `/vision`, `/features`, `/spec-feature`, `/design-feature`, `/plan-feature`, `/implement-feature` and other framework commands. See `docs/framework.md` for the full workflow.
+
+**Backlog Management**:
+- `/backlog [action]` - Manage bugs, ideas, improvements, tech-debt, questions
+- `/review-code [context|BUG-ID|IMP-ID|DEBT-ID]` - Review code (supports backlog IDs)
+- `/add-feature [description|IDEA-ID]` - Add feature (supports promoting IDEA items)
+- `/decision [topic|Q-ID]` - Document decision (supports Q items)
+
+## Backlog Tool
+
+Use `scripts/backlog.py` to manage bugs, ideas, improvements, tech-debt, and questions.
+
+```bash
+python scripts/backlog.py list                           # List open items
+python scripts/backlog.py show BUG-001                   # Show item details
+python scripts/backlog.py add bug "Title" --priority 2   # Add new item
+python scripts/backlog.py fix BUG-001 --commit abc123    # Mark as fixed
+python scripts/backlog.py promote IDEA-001 --feature X   # Promote to feature
+```
+
+**Item types**: bug (BUG-), idea (IDEA-), improvement (IMP-), tech-debt (DEBT-), question (Q-)
+**Priority scale**: 1=critical, 2=high, 3=medium, 4=low, 5=someday
 
 ## Current Focus
 

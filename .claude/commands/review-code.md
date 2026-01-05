@@ -9,7 +9,20 @@ Review code, propose changes, fix issues - all while ensuring alignment with des
 
 ## Input
 
-$ARGUMENTS - Description of issue/change, file path, or code concern
+$ARGUMENTS - Description of issue/change, file path, or **backlog item ID** (BUG-XXX, IMP-XXX, DEBT-XXX)
+
+## Backlog Integration
+
+If a backlog item ID is provided (e.g., `/review-code BUG-001`):
+
+1. **Load item context**
+   - Run `python scripts/backlog.py show <ID>` to get item details
+   - Use title and notes as initial context for the review
+   - If item has related features, read those feature specs/designs
+
+2. **After successful commit**
+   - Prompt: "Mark <ID> as fixed?"
+   - If yes: Run `python scripts/backlog.py fix <ID> --commit <hash>`
 
 ## Context
 
