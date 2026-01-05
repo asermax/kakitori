@@ -5,16 +5,19 @@ Mark with `X` where row depends on column.
 
 ## Full Dependency Matrix
 
-|              | C001 | R001 | P001 |
-|--------------|------|------|------|
-| CORE-001     | -    |      |      |
-| RECORD-001   | X    | -    |      |
-| PROCESS-001  | X    |      | -    |
+|            | C001 | C002 | PROC | PROC | RECO |
+|------------|------|------|------|------|------|
+| CORE-001   | -    |      |      |      |      |
+| CORE-002   | X    | -    |      |      |      |
+| PROCESS-001 | X    |      | -    |      |      |
+| PROCESS-002 |      |      | X    | -    |      |
+| RECORD-001 | X    |      |      |      | -    |
 
 **Legend:**
 - C001: CORE-001
-- R001: RECORD-001
-- P001: PROCESS-001
+- C002: CORE-002
+- PROC: PROCESS-001
+- RECO: RECORD-001
 
 ---
 
@@ -27,13 +30,14 @@ Foundation features with no dependencies:
 
 **Test Milestone**: "CLI parses subcommands correctly, loads configuration from multiple sources, logging works with verbose flag."
 
-### Phase 2: Commands (2 features)
+### Phase 2: Commands and CLI Enhancement (3 features)
 
 Features that depend on Phase 1:
+- **CORE-002**: Migrate CLI from argparse to cyclopts (depends: CORE-001)
 - **RECORD-001**: Audio Recording with Combined Sources (depends: CORE-001)
 - **PROCESS-001**: Audio Transcription Processing (depends: CORE-001)
 
-**Test Milestone**: "Record command captures microphone and system audio. Process command transcribes audio with speaker diarization."
+**Test Milestone**: "CLI uses cyclopts for type-hint-driven parsing. Record command captures microphone and system audio. Process command transcribes audio with speaker diarization."
 
 ---
 
@@ -48,4 +52,4 @@ Features that depend on Phase 1:
 ### Implementation Notes
 
 - **Phase 1** is sequential: single feature
-- **Phase 2** can be parallelized: RECORD-001 and PROCESS-001 are independent
+- **Phase 2** can be parallelized: CORE-002, RECORD-001, and PROCESS-001 are independent of each other

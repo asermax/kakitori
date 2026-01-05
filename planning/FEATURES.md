@@ -44,6 +44,11 @@ python scripts/features.py status show FEATURE-ID         # Detailed view
 **Complexity**: Medium
 **Description**: Subcommand-based CLI with configuration loading, logging setup, and backwards compatibility
 
+### CORE-002: Migrate CLI from argparse to cyclopts
+**Status**: ✓ Defined
+**Complexity**: Easy
+**Description**: Replace argparse-based CLI with cyclopts for type-hint-driven argument parsing. Support two subcommands: `record` (with -o/--output, -v/--verbose) and `process` (with audio_file, -o/--output, --stdout, --skip-speaker-id, -p/--participants, -v/--verbose). Remove backwards compatibility for `kakitori <file>` syntax. Follows hayamimi pattern with `App` and `Annotated[Type, Parameter(...)]`.
+
 ---
 
 ## RECORD - Audio Recording
@@ -62,18 +67,23 @@ python scripts/features.py status show FEATURE-ID         # Detailed view
 **Complexity**: Hard
 **Description**: Transcribe audio with speaker diarization using Gemini, with interactive speaker identification and multi-turn processing
 
+### PROCESS-002: Multi-LLM Provider Support via llm Library
+**Status**: ✓ Defined
+**Complexity**: Hard
+**Description**: Replace direct Gemini API integration with Simon Willison's llm library to support multiple LLM providers (OpenAI, Anthropic, etc.) while defaulting to Gemini. Includes provider-specific file upload handling and graceful feature degradation for providers that don't support audio natively or structured outputs.
+
 ---
 
 ## Feature Count Summary
 
-- **CORE**: 1 feature (1 medium)
+- **CORE**: 2 features (1 medium, 1 easy)
 - **RECORD**: 1 feature (1 hard)
-- **PROCESS**: 1 feature (1 hard)
+- **PROCESS**: 2 features (2 hard)
 
-**Total**: 3 features
-- Easy: 0
+**Total**: 5 features
+- Easy: 1
 - Medium: 1
-- Hard: 2
+- Hard: 3
 
 ---
 
