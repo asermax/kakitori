@@ -4,7 +4,7 @@ description: Create or update the project vision document
 
 # Vision Document Workflow
 
-Guide the user through creating planning/VISION.md.
+Guide the user through creating docs/planning/VISION.md.
 
 ## Context
 
@@ -15,7 +15,7 @@ Guide the user through creating planning/VISION.md.
 @docs/command-guidance.md - Core principles for collaborative command workflows (one question at a time, propose don't decide, use AskUserQuestion for structured options, detect gaps proactively, scratchpad usage, research triggers)
 
 **Vision document:**
-@planning/VISION.md - Current project vision (if exists)
+@docs/planning/VISION.md - Current project vision (if exists)
 
 ## General Guidance
 
@@ -32,7 +32,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
 ## Process
 
 0. **Check existing state**
-   - If `planning/VISION.md` exists:
+   - If `docs/planning/VISION.md` exists:
      - Read current vision document
      - Read project state (features, specs, implementation progress if any)
      - Summarize current state to user

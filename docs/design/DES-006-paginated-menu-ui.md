@@ -106,5 +106,5 @@ Initial pattern established from PROCESS-001 retrofit (speaker identification UI
 
 ## Related
 
-- Promoted from: [../designs/PROCESS-001.md](../designs/PROCESS-001.md)
+- Promoted from: [../feature-designs/PROCESS-001.md](../feature-designs/PROCESS-001.md)
 - Applied in: `src/kakitori/process/speaker.py`

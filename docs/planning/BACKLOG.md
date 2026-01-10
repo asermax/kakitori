@@ -28,10 +28,17 @@ Items not ready for full feature treatment. Managed via `/backlog` command or `s
 
 | ID | Pri | Title | Related | Status |
 |----|-----|-------|---------|--------|
+| BUG-001 | 2 | Ctrl+C during interactive prompts continues workfl... | - | open |
 
 ## Open Items
 
 <!-- Detailed item descriptions. -->
+
+### BUG-001: Ctrl+C during interactive prompts continues workflow instead of exiting
+- **Priority**: 2
+- **Related**: -
+- **Added**: 2026-01-05
+- **Notes**: When pressing Ctrl+C during interactive prompts (questionary), the command continues to the next step instead of exiting. Locations: ui.py:108 (confirm_sources), ui.py:144 (prompt_save_location), command.py:115-129 (post-recording prompts), speaker.py:387-391 (speaker identification). Expected: Ctrl+C should exit with code 130, except during recording itself where it should stop recording and continue workflow.
 
 ## Resolved Items
 

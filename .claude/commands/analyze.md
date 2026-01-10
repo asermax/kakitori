@@ -10,13 +10,13 @@ Review project state, find gaps, assess change impact.
 
 **Framework reference:**
 @docs/framework.md
-@planning/VISION.md
-@planning/FEATURES.md
-@planning/DEPENDENCIES.md
+@docs/planning/VISION.md
+@docs/planning/FEATURES.md
+@docs/planning/DEPENDENCIES.md
 @docs/architecture/README.md
 @docs/design/README.md
 
-Read all specs and plans in specs/ and plans/ directories.
+Read all specs and plans in docs/feature-specs/ and docs/feature-plans/ directories.
 
 **Command guidance principles:**
 @docs/command-guidance.md - Core principles for collaborative command workflows

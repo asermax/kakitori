@@ -26,9 +26,9 @@ Analyze uncommitted git changes and propose grouped commits using conventional c
 
    Common groupings by category:
    - Framework changes (docs/framework.md, command definitions)
-   - Feature-specific changes (specs/, designs/, plans/, implementation)
+   - Feature-specific changes (docs/feature-specs/, docs/feature-designs/, docs/feature-plans/, implementation)
    - Documentation (README, CLAUDE.md, architecture docs)
-   - Vision/planning (planning/VISION.md, FEATURES.md, DEPENDENCIES.md)
+   - Vision/planning (docs/planning/VISION.md, FEATURES.md, DEPENDENCIES.md)
    - New commands (.claude/commands/)
    - Build/tooling (package.json, tsconfig, etc.)
 

@@ -20,10 +20,10 @@ Change description: $ARGUMENTS (optional - will prompt if not provided)
 @docs/command-guidance.md - Core principles for collaborative command workflows
 
 **Feature inventory:**
-@planning/FEATURES.md - Feature definitions and status
+@docs/planning/FEATURES.md - Feature definitions and status
 
 **Dependency matrix:**
-@planning/DEPENDENCIES.md - Feature dependencies and implementation phases
+@docs/planning/DEPENDENCIES.md - Feature dependencies and implementation phases
 
 **Project decisions:**
 @docs/architecture/README.md - Architecture decisions (ADRs)
@@ -49,7 +49,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
 ## Pre-Check
 
 Verify framework is initialized:
-- If `planning/` doesn't exist, explain this command requires initialized framework
+- If `docs/planning/` doesn't exist, explain this command requires initialized framework
 - If minimal features exist, note the analysis may be limited
 
 ## Process
@@ -101,8 +101,8 @@ Draft a complete impact analysis:
 | UI-003 | CORE-001 → UI-003 | Medium |
 
 ### Documents Requiring Updates
-- specs/CORE-001.md - Update acceptance criteria for X
-- designs/API-002.md - Revise data flow for Y
+- docs/feature-specs/CORE-001.md - Update acceptance criteria for X
+- docs/feature-designs/API-002.md - Revise data flow for Y
 - docs/architecture/ADR-005.md - Consider superseding
 
 ### Recommendations

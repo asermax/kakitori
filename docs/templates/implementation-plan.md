@@ -1,7 +1,7 @@
 # Implementation Plan: [FEATURE-ID]
 
-**Feature Spec**: [../specs/FEATURE-ID.md](../specs/FEATURE-ID.md)
-**Feature Design**: [../designs/FEATURE-ID.md](../designs/FEATURE-ID.md)
+**Feature Spec**: [../feature-specs/FEATURE-ID.md](../feature-specs/FEATURE-ID.md)
+**Feature Design**: [../feature-designs/FEATURE-ID.md](../feature-designs/FEATURE-ID.md)
 **Status**: Not Started | In Progress | Complete
 
 ## Pre-Implementation Checklist

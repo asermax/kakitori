@@ -35,10 +35,10 @@ If a backlog item ID is provided (e.g., `/add-feature IDEA-001`):
 @docs/command-guidance.md - Core principles for collaborative command workflows (one question at a time, propose don't decide, use AskUserQuestion for structured options, detect gaps proactively, scratchpad usage, research triggers)
 
 **Feature inventory:**
-@planning/FEATURES.md - Existing feature definitions and complexity ratings
+@docs/planning/FEATURES.md - Existing feature definitions and complexity ratings
 
 **Dependency matrix:**
-@planning/DEPENDENCIES.md - Feature dependencies and implementation phases
+@docs/planning/DEPENDENCIES.md - Feature dependencies and implementation phases
 
 ## General Guidance
 
@@ -62,7 +62,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
 ## Pre-Check
 
 Verify framework is initialized:
-- If `planning/` doesn't exist, explain that the framework needs to be set up first
+- If `docs/planning/` doesn't exist, explain that the framework needs to be set up first
 - If FEATURES.md or DEPENDENCIES.md missing, explain what's needed
 
 ## Process

@@ -38,7 +38,7 @@ from typing import Dict, List, Set, Tuple, Optional
 
 
 class DependencyMatrix:
-    def __init__(self, filepath: str = "planning/DEPENDENCIES.md"):
+    def __init__(self, filepath: str = "docs/planning/DEPENDENCIES.md"):
         self.filepath = Path(filepath)
         self.features: List[str] = []
         self.matrix: Dict[str, Set[str]] = {}
@@ -440,7 +440,7 @@ class DependencyMatrix:
 
 
 class StatusManager:
-    def __init__(self, filepath: str = "planning/FEATURES.md"):
+    def __init__(self, filepath: str = "docs/planning/FEATURES.md"):
         self.filepath = Path(filepath)
         self.features: Dict[str, Dict[str, str]] = {}
         self._load()
@@ -652,15 +652,15 @@ def main():
 
     subcommand = sys.argv[1]
 
-    # Find project root (where planning/ directory exists)
+    # Find project root (where docs/planning/ directory exists)
     cwd = Path.cwd()
     project_root = cwd
     while project_root != project_root.parent:
-        if (project_root / "planning" / "DEPENDENCIES.md").exists():
+        if (project_root / "docs" / "planning" / "DEPENDENCIES.md").exists():
             break
         project_root = project_root.parent
     else:
-        print("Error: Could not find planning/DEPENDENCIES.md")
+        print("Error: Could not find docs/planning/DEPENDENCIES.md")
         sys.exit(1)
 
     if subcommand == "deps":
@@ -671,7 +671,7 @@ def main():
             sys.exit(1)
 
         command = sys.argv[2]
-        matrix_path = project_root / "planning" / "DEPENDENCIES.md"
+        matrix_path = project_root / "docs" / "planning" / "DEPENDENCIES.md"
         dm = DependencyMatrix(str(matrix_path))
 
         if command == "query":
@@ -797,11 +797,11 @@ def main():
             sys.exit(1)
 
         command = sys.argv[2]
-        features_path = project_root / "planning" / "FEATURES.md"
+        features_path = project_root / "docs" / "planning" / "FEATURES.md"
         sm = StatusManager(str(features_path))
 
         # Also load dependency matrix for richer status display
-        matrix_path = project_root / "planning" / "DEPENDENCIES.md"
+        matrix_path = project_root / "docs" / "planning" / "DEPENDENCIES.md"
         dm = DependencyMatrix(str(matrix_path))
 
         if command == "list":
@@ -865,8 +865,8 @@ def main():
 
     elif subcommand == "ready":
         # List features ready to implement
-        features_path = project_root / "planning" / "FEATURES.md"
-        matrix_path = project_root / "planning" / "DEPENDENCIES.md"
+        features_path = project_root / "docs" / "planning" / "FEATURES.md"
+        matrix_path = project_root / "docs" / "planning" / "DEPENDENCIES.md"
 
         sm = StatusManager(str(features_path))
         dm = DependencyMatrix(str(matrix_path))
@@ -887,8 +887,8 @@ def main():
 
     elif subcommand == "next":
         # Suggest next feature to implement
-        features_path = project_root / "planning" / "FEATURES.md"
-        matrix_path = project_root / "planning" / "DEPENDENCIES.md"
+        features_path = project_root / "docs" / "planning" / "FEATURES.md"
+        matrix_path = project_root / "docs" / "planning" / "DEPENDENCIES.md"
 
         sm = StatusManager(str(features_path))
         dm = DependencyMatrix(str(matrix_path))

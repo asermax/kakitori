@@ -86,6 +86,6 @@ Initial pattern established from RECORD-001 retrofit (PulseAudio module cleanup)
 
 ## Related
 
-- Promoted from: [../designs/RECORD-001.md](../designs/RECORD-001.md)
+- Promoted from: [../feature-designs/RECORD-001.md](../feature-designs/RECORD-001.md)
 - Related: [ADR-003](../architecture/ADR-003-pulseaudio-null-sink-mixing.md) (what needs cleanup)
 - Applied in: `src/kakitori/record/command.py`

@@ -19,17 +19,17 @@ Feature ID: $ARGUMENTS
 @docs/command-guidance.md - Core principles for collaborative command workflows
 
 **Feature spec:**
-@specs/$ARGUMENTS.md - The specification we're designing for
+@docs/feature-specs/$ARGUMENTS.md - The specification we're designing for
 
 **Project decisions:**
 @docs/architecture/README.md - Architecture decisions (ADRs)
 @docs/design/README.md - Design patterns (DES)
 
 **Design template:**
-@designs/TEMPLATE.md - Template for design documents
+@docs/feature-designs/TEMPLATE.md - Template for design documents
 
 **Existing design (if present):**
-@designs/$ARGUMENTS.md - Current design to update or create
+@docs/feature-designs/$ARGUMENTS.md - Current design to update or create
 
 ## General Guidance
 
@@ -55,7 +55,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
 ## Process
 
 0. **Check existing state**
-   - If `designs/$ARGUMENTS.md` exists:
+   - If `docs/feature-designs/$ARGUMENTS.md` exists:
      - Read current design
      - Check for drift: Has spec changed? Are there new acceptance criteria or error scenarios?
      - Summarize to user: design approach, key decisions, modeling choices
@@ -65,7 +65,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
    - If no design exists: proceed with initial creation
 
 1. **Research phase** (silent, thorough)
-   - Read feature spec (`specs/$ARGUMENTS.md`)
+   - Read feature spec (`docs/feature-specs/$ARGUMENTS.md`)
    - **Read ADR/DES pattern documents (not just indexes):**
      - Start with `docs/architecture/README.md` and `docs/design/README.md` to identify relevant patterns
      - Use the quick reference tables to find patterns for your task
@@ -81,7 +81,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
    - Proposals must be grounded in actual knowledge, not assumptions
 
 2. **Draft complete design proposal**
-   - Create full design document following `designs/TEMPLATE.md`
+   - Create full design document following `docs/feature-designs/TEMPLATE.md`
    - Cover all sections:
      - Problem context (problem being solved, constraints, interactions)
      - Design approach (high-level solution, components/concepts, alternatives)
@@ -120,7 +120,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
 6. **Finalize with iteration check**
    - Ask: "Should we iterate based on validation feedback, or is the design complete?"
    - If gaps to address → refine relevant sections (go back to step 4)
-   - If complete → finalize document to `designs/$ARGUMENTS.md`
+   - If complete → finalize document to `docs/feature-designs/$ARGUMENTS.md`
 
 ## Workflow
 

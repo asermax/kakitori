@@ -1,6 +1,6 @@
 # Design: CORE-001 - CLI Infrastructure
 
-**Feature Spec**: [../specs/CORE-001.md](../specs/CORE-001.md)
+**Feature Spec**: [../feature-specs/CORE-001.md](../feature-specs/CORE-001.md)
 **Status**: Approved
 
 ## Retrofit Note
@@ -184,7 +184,7 @@ kakitori/
 
 **Trade-off**: Argument parsing happens twice for legacy invocations, but `_add_process_arguments()` is shared to reduce duplication.
 
-**Related**: [ADR-001](../docs/architecture/ADR-001-subcommand-architecture.md)
+**Related**: [ADR-001](../architecture/ADR-001-subcommand-architecture.md)
 
 ---
 
@@ -194,7 +194,7 @@ kakitori/
 
 **Why**: Different users have different preferences (global key vs per-project vs CI/CD).
 
-**Related**: [ADR-002](../docs/architecture/ADR-002-multi-source-configuration.md)
+**Related**: [ADR-002](../architecture/ADR-002-multi-source-configuration.md)
 
 ---
 
@@ -214,7 +214,7 @@ kakitori/
 
 **Why**: Recording and processing have different dependencies. Lazy imports avoid loading unused code.
 
-**Related**: [DES-001](../docs/design/DES-001-lazy-command-imports.md)
+**Related**: [DES-001](../design/DES-001-lazy-command-imports.md)
 
 ---
 

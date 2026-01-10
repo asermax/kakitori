@@ -87,7 +87,7 @@ Extract learnings from the conversation and update framework/learnings files.
 
 **What NOT to Record**:
 - Implementation details (those go in code or feature docs)
-- Feature-specific decisions (those go in designs/)
+- Feature-specific decisions (those go in docs/feature-designs/)
 - Temporary notes or TODO items
 - Duplicate information already captured
 

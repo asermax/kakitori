@@ -1,6 +1,6 @@
 # Design: RECORD-001 - Audio Recording with Combined Sources
 
-**Feature Spec**: [../specs/RECORD-001.md](../specs/RECORD-001.md)
+**Feature Spec**: [../feature-specs/RECORD-001.md](../feature-specs/RECORD-001.md)
 **Status**: Approved
 
 ## Retrofit Note
@@ -222,7 +222,7 @@ class CombinedSink:
 
 **Why**: Eliminates timestamp drift that occurs with dual-source ffmpeg mixing.
 
-**Related**: [ADR-003](../docs/architecture/ADR-003-pulseaudio-null-sink-mixing.md)
+**Related**: [ADR-003](../architecture/ADR-003-pulseaudio-null-sink-mixing.md)
 
 ---
 
@@ -232,7 +232,7 @@ class CombinedSink:
 
 **Why**: Prevents partial files from appearing at user-specified location.
 
-**Related**: [DES-002](../docs/design/DES-002-atomic-file-operations.md)
+**Related**: [DES-002](../design/DES-002-atomic-file-operations.md)
 
 ---
 
@@ -242,7 +242,7 @@ class CombinedSink:
 
 **Why**: ffmpeg properly finalizes the file with correct headers and duration.
 
-**Related**: [DES-003](../docs/design/DES-003-ffmpeg-graceful-stop.md)
+**Related**: [DES-003](../design/DES-003-ffmpeg-graceful-stop.md)
 
 ---
 
@@ -262,7 +262,7 @@ class CombinedSink:
 
 **Why**: PulseAudio modules persist beyond process termination. Layered approach maximizes cleanup coverage.
 
-**Related**: [DES-004](../docs/design/DES-004-layered-cleanup.md)
+**Related**: [DES-004](../design/DES-004-layered-cleanup.md)
 
 ---
 

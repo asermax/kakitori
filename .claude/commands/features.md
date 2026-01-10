@@ -15,10 +15,10 @@ Extract atomic features from VISION.md into FEATURES.md.
 @docs/command-guidance.md - Core principles for collaborative command workflows (one question at a time, propose don't decide, use AskUserQuestion for structured options, detect gaps proactively, scratchpad usage, research triggers)
 
 **Vision document:**
-@planning/VISION.md - Project vision to extract features from
+@docs/planning/VISION.md - Project vision to extract features from
 
 **Features document:**
-@planning/FEATURES.md - Current feature inventory (if exists)
+@docs/planning/FEATURES.md - Current feature inventory (if exists)
 
 ## General Guidance
 
@@ -43,7 +43,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
 ## Process
 
 0. **Check existing state**
-   - If `planning/FEATURES.md` exists:
+   - If `docs/planning/FEATURES.md` exists:
      - Read current feature inventory
      - Read current vision (check for changes)
      - Compare: Are there new workflows? Changed scope? New technical context?
@@ -110,7 +110,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
 6. **User iteration and finalization**
    - Ask user: "Should we iterate based on this feedback, or is the inventory complete?"
    - If gaps/issues to address → refine features (split, merge, add, adjust complexity, recategorize)
-   - If complete → finalize and write document to `planning/FEATURES.md`
+   - If complete → finalize and write document to `docs/planning/FEATURES.md`
 
 ## Atomicity Check
 

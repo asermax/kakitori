@@ -85,7 +85,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
 
    a. **Impact analysis first**
       - Check FEATURES.md for features referencing this decision
-      - Check specs/ and designs/ directories for references
+      - Check docs/feature-specs/ and docs/feature-designs/ directories for references
       - Present impact to user before proceeding
 
    b. **Update decision document**

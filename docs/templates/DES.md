@@ -57,4 +57,4 @@ Initial pattern established.
 ## Related
 
 - See also: [DES-XXX] - [Related pattern]
-- Promoted from: [../designs/FEATURE-ID.md](../designs/FEATURE-ID.md) - [If originated from feature design]
+- Promoted from: [../feature-designs/FEATURE-ID.md](../feature-designs/FEATURE-ID.md) - [If originated from feature design]

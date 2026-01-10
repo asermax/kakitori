@@ -4,7 +4,7 @@ description: Build the dependency matrix for features
 
 # Dependency Matrix Workflow
 
-Build the dependency matrix in planning/DEPENDENCIES.md.
+Build the dependency matrix in docs/planning/DEPENDENCIES.md.
 
 ## Context
 
@@ -15,10 +15,10 @@ Build the dependency matrix in planning/DEPENDENCIES.md.
 @docs/command-guidance.md - Core principles for collaborative command workflows (one question at a time, propose don't decide, use AskUserQuestion for structured options, detect gaps proactively, scratchpad usage, research triggers)
 
 **Features document:**
-@planning/FEATURES.md - Feature inventory to analyze for dependencies
+@docs/planning/FEATURES.md - Feature inventory to analyze for dependencies
 
 **Dependencies document:**
-@planning/DEPENDENCIES.md - Current dependency matrix (if exists)
+@docs/planning/DEPENDENCIES.md - Current dependency matrix (if exists)
 
 ## General Guidance
 
@@ -47,7 +47,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
 ## Process
 
 0. **Check existing state**
-   - If `planning/DEPENDENCIES.md` exists:
+   - If `docs/planning/DEPENDENCIES.md` exists:
      - Read current dependency matrix
      - Read current features (check for new features)
      - Compare: Are there new features? Changed feature definitions?
@@ -158,7 +158,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
      - Adjust as needed
    - If complete:
      - Finalize matrix and phases
-     - Write document to `planning/DEPENDENCIES.md`
+     - Write document to `docs/planning/DEPENDENCIES.md`
 
 ## Gap Detection Questions
 

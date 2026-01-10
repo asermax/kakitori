@@ -19,15 +19,15 @@ Feature ID: $ARGUMENTS
 @docs/command-guidance.md - Core principles for collaborative command workflows
 
 **Feature documents:**
-@specs/$ARGUMENTS.md - What to build (requirements)
-@designs/$ARGUMENTS.md - Why/how (design rationale)
+@docs/feature-specs/$ARGUMENTS.md - What to build (requirements)
+@docs/feature-designs/$ARGUMENTS.md - Why/how (design rationale)
 
 **Project decisions:**
 @docs/architecture/README.md - Architecture decisions (ADRs)
 @docs/design/README.md - Design patterns (DES)
 
 **Existing plan (if present):**
-@plans/$ARGUMENTS.md - Current plan to update or create
+@docs/feature-plans/$ARGUMENTS.md - Current plan to update or create
 
 Read dependency specs, designs, and code based on "Requires:" field in spec.
 
@@ -66,7 +66,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
 ## Process
 
 0. **Check existing state**
-   - If `plans/$ARGUMENTS.md` exists:
+   - If `docs/feature-plans/$ARGUMENTS.md` exists:
      - Read current plan
      - Check for drift: Has spec changed? Has design changed? Are steps still aligned?
      - Summarize to user: implementation steps, verification approach
@@ -76,8 +76,8 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
    - If no plan exists: proceed with initial creation
 
 1. **Research phase** (silent, thorough)
-   - Read feature spec (`specs/$ARGUMENTS.md`)
-   - Read feature design (`designs/$ARGUMENTS.md`)
+   - Read feature spec (`docs/feature-specs/$ARGUMENTS.md`)
+   - Read feature design (`docs/feature-designs/$ARGUMENTS.md`)
    - Read dependency specs and designs from "Requires:" field in spec
    - Read relevant ADRs from `docs/architecture/README.md`
    - Read relevant DES patterns from `docs/design/README.md`
@@ -131,7 +131,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
 6. **Finalize with iteration check**
    - Ask: "Should we iterate based on validation feedback, or is the plan complete?"
    - If gaps to address → refine steps (go back to step 4)
-   - If complete → finalize document to `plans/$ARGUMENTS.md`
+   - If complete → finalize document to `docs/feature-plans/$ARGUMENTS.md`
 
 ## Workflow
 

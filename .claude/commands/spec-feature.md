@@ -19,15 +19,15 @@ Feature ID: $ARGUMENTS (e.g., "CORE-001")
 @docs/command-guidance.md - Core principles for collaborative command workflows
 
 **Feature inventory:**
-@planning/FEATURES.md - Feature definitions and complexity ratings
-@planning/DEPENDENCIES.md - Feature dependencies and implementation phases
+@docs/planning/FEATURES.md - Feature definitions and complexity ratings
+@docs/planning/DEPENDENCIES.md - Feature dependencies and implementation phases
 
 **Project decisions:**
 @docs/architecture/README.md - Architecture decisions (ADRs)
 @docs/design/README.md - Design patterns (DES)
 
 **Existing spec (if present):**
-@specs/$ARGUMENTS.md - Current spec to update or create
+@docs/feature-specs/$ARGUMENTS.md - Current spec to update or create
 
 ## General Guidance
 
@@ -52,7 +52,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
 ## Process
 
 0. **Check existing state**
-   - If `specs/$ARGUMENTS.md` exists:
+   - If `docs/feature-specs/$ARGUMENTS.md` exists:
      - Read current spec
      - Check for drift: Has FEATURES.md description changed? Are there new dependencies?
      - Summarize to user: user story, key acceptance criteria, known edge cases
@@ -62,8 +62,8 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
    - If no spec exists: proceed with initial creation
 
 1. **Research phase** (silent, thorough)
-   - Read feature description from `planning/FEATURES.md`
-   - Read dependencies from `planning/DEPENDENCIES.md`
+   - Read feature description from `docs/planning/FEATURES.md`
+   - Read dependencies from `docs/planning/DEPENDENCIES.md`
    - Read relevant ADRs from `docs/architecture/README.md`
    - Read relevant DES patterns from `docs/design/README.md`
    - Explore related codebase areas if needed
@@ -110,7 +110,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
 6. **Finalize with iteration check**
    - Ask: "Should we iterate based on validation feedback, or is the spec complete?"
    - If gaps to address → refine relevant sections (go back to step 4)
-   - If complete → finalize document to `specs/$ARGUMENTS.md`
+   - If complete → finalize document to `docs/feature-specs/$ARGUMENTS.md`
 
 ## Workflow
 

@@ -16,9 +16,9 @@ Feature ID: $ARGUMENTS
 @docs/command-guidance.md - Core principles for collaborative command workflows
 
 **Feature documents:**
-@specs/$ARGUMENTS.md - What to build (requirements)
-@designs/$ARGUMENTS.md - Why/how (design rationale)
-@plans/$ARGUMENTS.md - Implementation steps to follow
+@docs/feature-specs/$ARGUMENTS.md - What to build (requirements)
+@docs/feature-designs/$ARGUMENTS.md - Why/how (design rationale)
+@docs/feature-plans/$ARGUMENTS.md - Implementation steps to follow
 
 **Project decisions:**
 @docs/architecture/README.md - Architecture decisions (ADRs)
@@ -47,7 +47,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
 ## Process
 
 1. **Review plan and decisions** (silent)
-   - Read implementation plan (`plans/$ARGUMENTS.md`)
+   - Read implementation plan (`docs/feature-plans/$ARGUMENTS.md`)
    - Read spec and design
    - **Read full ADR/DES documents (not just indexes):**
      - Identify ADRs/DES listed in plan's pre-implementation checklist

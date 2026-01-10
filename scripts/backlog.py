@@ -74,7 +74,7 @@ PREFIX_TO_TYPE = {v: k for k, v in TYPE_PREFIXES.items()}
 
 
 class BacklogManager:
-    def __init__(self, filepath: str = "planning/BACKLOG.md"):
+    def __init__(self, filepath: str = "docs/planning/BACKLOG.md"):
         self.filepath = Path(filepath)
         self.items: dict[str, BacklogItem] = {}
         self._load()
@@ -445,14 +445,14 @@ def main():
     cwd = Path.cwd()
     project_root = cwd
     while project_root != project_root.parent:
-        if (project_root / "planning").exists():
+        if (project_root / "docs" / "planning").exists():
             break
         project_root = project_root.parent
     else:
-        print("Error: Could not find planning/ directory")
+        print("Error: Could not find docs/planning/ directory")
         sys.exit(1)
 
-    backlog_path = project_root / "planning" / "BACKLOG.md"
+    backlog_path = project_root / "docs" / "planning" / "BACKLOG.md"
     bm = BacklogManager(str(backlog_path))
 
     if command == "add":

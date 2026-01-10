@@ -8,11 +8,11 @@ Kakitori is a CLI tool for audio recording and transcription with speaker diariz
 
 ## Key Files
 
-- `planning/VISION.md` - Project vision and scope
-- `planning/FEATURES.md` - Feature inventory with status
-- `planning/DEPENDENCIES.md` - Implementation phases
-- `planning/BACKLOG.md` - Bugs, ideas, improvements, tech-debt, questions
-- `specs/` - Feature specifications
+- `docs/planning/VISION.md` - Project vision and scope
+- `docs/planning/FEATURES.md` - Feature inventory with status
+- `docs/planning/DEPENDENCIES.md` - Implementation phases
+- `docs/planning/BACKLOG.md` - Bugs, ideas, improvements, tech-debt, questions
+- `docs/feature-specs/` - Feature specifications
 - `docs/framework.md` - Development framework documentation
 
 ## Available Commands

@@ -70,5 +70,5 @@ Initial pattern established from CORE-001 retrofit.
 
 ## Related
 
-- Promoted from: [../designs/CORE-001.md](../designs/CORE-001.md)
+- Promoted from: [../feature-designs/CORE-001.md](../feature-designs/CORE-001.md)
 - Applied in: `src/kakitori/__init__.py`

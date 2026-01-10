@@ -107,7 +107,7 @@ Commands can use this tool to:
 
 ### Implementation
 
-The tool parses `planning/DEPENDENCIES.md` directly, extracting:
+The tool parses `docs/planning/DEPENDENCIES.md` directly, extracting:
 - Dependency relationships from the matrix
 - Phase assignments from the Implementation Phases section
 - Feature IDs and abbreviations from the legend

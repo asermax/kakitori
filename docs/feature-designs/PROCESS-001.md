@@ -1,6 +1,6 @@
 # Design: PROCESS-001 - Audio Transcription Processing
 
-**Feature Spec**: [../specs/PROCESS-001.md](../specs/PROCESS-001.md)
+**Feature Spec**: [../feature-specs/PROCESS-001.md](../feature-specs/PROCESS-001.md)
 **Status**: Approved
 
 ## Retrofit Note
@@ -221,7 +221,7 @@ class SpeakerState:
 
 **Why**: Recordings can exceed 2 hours; single request would truncate at token limit.
 
-**Related**: [ADR-004](../docs/architecture/ADR-004-multi-turn-transcription.md)
+**Related**: [ADR-004](../architecture/ADR-004-multi-turn-transcription.md)
 
 ---
 
@@ -251,7 +251,7 @@ class SpeakerState:
 
 **Why**: Prevents audio overlap into next speaker; short segments play completely.
 
-**Related**: [DES-005](../docs/design/DES-005-adaptive-snippet-duration.md)
+**Related**: [DES-005](../design/DES-005-adaptive-snippet-duration.md)
 
 ---
 
@@ -261,7 +261,7 @@ class SpeakerState:
 
 **Why**: Speakers with 100+ segments need pagination; overview + detail provides efficient navigation.
 
-**Related**: [DES-006](../docs/design/DES-006-paginated-menu-ui.md)
+**Related**: [DES-006](../design/DES-006-paginated-menu-ui.md)
 
 ---
 

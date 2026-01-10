@@ -90,5 +90,5 @@ Initial pattern established from RECORD-001 retrofit.
 
 ## Related
 
-- Promoted from: [../designs/RECORD-001.md](../designs/RECORD-001.md)
+- Promoted from: [../feature-designs/RECORD-001.md](../feature-designs/RECORD-001.md)
 - Applied in: `src/kakitori/record/recorder.py`

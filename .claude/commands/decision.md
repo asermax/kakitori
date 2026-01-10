@@ -37,7 +37,7 @@ If a backlog item ID is provided (e.g., `/decision Q-001`):
 @docs/design/README.md - Design Patterns (DES)
 
 **Features document (if exists):**
-@planning/FEATURES.md - Feature inventory to check for affected features
+@docs/planning/FEATURES.md - Feature inventory to check for affected features
 
 ## General Guidance
 
@@ -81,7 +81,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
      - List existing decisions from both indexes
      - Use AskUserQuestion: Which decision to update?
      - Read current decision document
-     - Read planning/FEATURES.md to identify affected features
+     - Read docs/planning/FEATURES.md to identify affected features
      - Summarize current state
      - Present complete updated proposal (follow steps 1-3 for updates)
    - If creating new: proceed with creation workflow
@@ -181,8 +181,8 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
      - Ask: Should we supersede (major change) or evolve (refinement)?
 
    - Analyze impact:
-     - Check planning/FEATURES.md for features that reference this decision
-     - Check specs/ and designs/ directories for references
+     - Check docs/planning/FEATURES.md for features that reference this decision
+     - Check docs/feature-specs/ and docs/feature-designs/ directories for references
      - Present impact to user: "This decision is referenced by [features/specs/designs]. Updates may be needed."
 
    - **For superseding (major change)**:

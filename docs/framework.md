@@ -33,9 +33,9 @@
 │     └─ Build matrix, derive implementation phases           │
 ├─────────────────────────────────────────────────────────────┤
 │  4. For each feature (in phase order):                      │
-│     ├─ Write spec (specs/FEATURE-ID.md) - WHAT             │
-│     ├─ Write design (designs/FEATURE-ID.md) - WHY/HOW      │
-│     ├─ Write plan (plans/FEATURE-ID.md) - STEPS            │
+│     ├─ Write spec (docs/feature-specs/FEATURE-ID.md) - WHAT             │
+│     ├─ Write design (docs/feature-designs/FEATURE-ID.md) - WHY/HOW      │
+│     ├─ Write plan (docs/feature-plans/FEATURE-ID.md) - STEPS            │
 │     ├─ Implement with Claude                                │
 │     ├─ Test against acceptance criteria                     │
 │     ├─ Review and correct                                   │
@@ -63,20 +63,20 @@ project/
 │   ├── architecture/             # Hard decisions (ADRs)
 │   │   ├── README.md             # Index
 │   │   └── ADR-*.md              # Individual decisions
-│   └── design/                   # Patterns (DES)
-│       ├── README.md             # Index
-│       └── DES-*.md              # Cross-cutting patterns
-├── planning/
-│   ├── VISION.md
-│   ├── FEATURES.md
-│   ├── DEPENDENCIES.md
-│   └── BACKLOG.md
-├── specs/
-│   └── FEATURE-ID.md             # What to build
-├── designs/
-│   └── FEATURE-ID.md             # Why/how (design rationale)
-├── plans/
-│   └── FEATURE-ID.md             # Implementation steps
+│   ├── design/                   # Patterns (DES)
+│   │   ├── README.md             # Index
+│   │   └── DES-*.md              # Cross-cutting patterns
+│   ├── planning/
+│   │   ├── VISION.md
+│   │   ├── FEATURES.md
+│   │   ├── DEPENDENCIES.md
+│   │   └── BACKLOG.md
+│   ├── feature-specs/
+│   │   └── FEATURE-ID.md         # What to build
+│   ├── feature-designs/
+│   │   └── FEATURE-ID.md         # Why/how (design rationale)
+│   └── feature-plans/
+│       └── FEATURE-ID.md         # Implementation steps
 └── src/
 ```
 
@@ -84,17 +84,17 @@ project/
 
 | Document | Purpose | Scope |
 |----------|---------|-------|
-| **Feature Spec** (`specs/`) | WHAT to build | Per feature |
-| **Feature Design** (`designs/`) | WHY/HOW - design rationale, modeling, data flow | Per feature |
-| **Implementation Plan** (`plans/`) | STEPS to implement | Per feature |
+| **Feature Spec** (`docs/feature-specs/`) | WHAT to build | Per feature |
+| **Feature Design** (`docs/feature-designs/`) | WHY/HOW - design rationale, modeling, data flow | Per feature |
+| **Implementation Plan** (`docs/feature-plans/`) | STEPS to implement | Per feature |
 | **Architecture Decision** (`docs/architecture/`) | Hard-to-change decisions (platform, language) | Project-wide |
 | **Design Pattern** (`docs/design/`) | Cross-cutting patterns & conventions | Project-wide |
-| **Dependencies** (`planning/DEPENDENCIES.md`) | WHEN to build (phases) | Project-wide |
-| **Backlog** (`planning/BACKLOG.md`) | Bugs, ideas, improvements, tech-debt, questions | Project-wide |
+| **Dependencies** (`docs/planning/DEPENDENCIES.md`) | WHEN to build (phases) | Project-wide |
+| **Backlog** (`docs/planning/BACKLOG.md`) | Bugs, ideas, improvements, tech-debt, questions | Project-wide |
 
 ### Feature-Specific vs Project-Wide
 
-**Per Feature** (specs/, designs/, plans/):
+**Per Feature** (docs/feature-specs/, docs/feature-designs/, docs/feature-plans/):
 - Specific to one feature's requirements
 - Can be promoted to pattern if proves reusable
 - Document the unique choices for this feature
@@ -106,12 +106,12 @@ project/
 
 ### Backlog vs Features
 
-**Features** (`planning/FEATURES.md`):
+**Features** (`docs/planning/FEATURES.md`):
 - Well-defined units of functionality
 - Have specs, designs, plans
 - Follow the full implementation workflow
 
-**Backlog** (`planning/BACKLOG.md`):
+**Backlog** (`docs/planning/BACKLOG.md`):
 - Items not ready for full feature treatment
 - Bugs, ideas, improvements, tech-debt, questions
 - May be promoted to features or resolved directly
@@ -164,9 +164,9 @@ All templates are located in `docs/templates/`:
 - `docs/templates/DEPENDENCIES.md` - Dependency matrix
 
 **Per Feature**:
-- `docs/templates/feature-spec.md` - Feature specification (copy to `specs/FEATURE-ID.md`)
-- `designs/TEMPLATE.md` - Feature design rationale (copy to `designs/FEATURE-ID.md`)
-- `docs/templates/implementation-plan.md` - Implementation plan (copy to `plans/FEATURE-ID.md`)
+- `docs/templates/feature-spec.md` - Feature specification (copy to `docs/feature-specs/FEATURE-ID.md`)
+- `docs/feature-designs/TEMPLATE.md` - Feature design rationale (copy to `docs/feature-designs/FEATURE-ID.md`)
+- `docs/templates/implementation-plan.md` - Implementation plan (copy to `docs/feature-plans/FEATURE-ID.md`)
 
 **Project-Wide Decisions**:
 - `docs/templates/ADR.md` - Architecture Decision Record (copy to `docs/architecture/ADR-NNN-topic.md`)

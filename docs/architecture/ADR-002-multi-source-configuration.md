@@ -66,4 +66,4 @@ Later sources override earlier ones due to dictionary key replacement.
 
 - Retrofitted from existing implementation in CORE-001
 - Error message in `_run_process_command` lists all three sources with setup instructions
-- Related: [../designs/CORE-001.md](../../designs/CORE-001.md)
+- Related: [../feature-designs/CORE-001.md](../feature-designs/CORE-001.md)

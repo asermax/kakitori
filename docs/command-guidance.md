@@ -260,7 +260,7 @@ Balance fresh perspective with respecting user decisions:
 python scripts/features.py status set FEATURE-ID "STATUS"
 ```
 
-**Note:** The `features.py` script automatically locates the project root by searching for `planning/DEPENDENCIES.md`, so it can be called from any subdirectory.
+**Note:** The `features.py` script automatically locates the project root by searching for `docs/planning/DEPENDENCIES.md`, so it can be called from any subdirectory.
 
 ## Collaborative Process
 

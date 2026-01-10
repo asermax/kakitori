@@ -60,4 +60,4 @@ The legacy parser treats the first positional argument as an audio file and impl
 ## Notes
 
 - Retrofitted from existing implementation in CORE-001
-- Related: [../designs/CORE-001.md](../../designs/CORE-001.md)
+- Related: [../feature-designs/CORE-001.md](../feature-designs/CORE-001.md)
