@@ -112,13 +112,6 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
    - If gaps/issues to address → refine features (split, merge, add, adjust complexity, recategorize)
    - If complete → finalize and write document to `docs/planning/FEATURES.md`
 
-## Atomicity Check
-
-Apply to each feature during extraction AND during final review:
-- Can this be implemented in a single focused session?
-- Does it do ONE thing?
-- If no → split into smaller features and re-extract
-
 ## Workflow
 
 **This is a collaborative process:**

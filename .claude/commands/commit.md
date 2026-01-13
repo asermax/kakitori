@@ -4,101 +4,166 @@ description: Analyze uncommitted changes and create grouped conventional commits
 
 # Commit Workflow
 
-Analyze uncommitted git changes and propose grouped commits using conventional commit format.
+Analyze changes and create appropriate conventional commits.
 
 ## Process
 
-1. **Analyze changes**
-   - Run `git status` to see all uncommitted files
-   - Run `git diff` to understand the nature of changes
-   - Run `git log --oneline -5` to see recent commit message style
+### 1. Analyze Changes
 
-2. **Group changes by related work**
+Run in parallel:
+```bash
+git status
+git diff --staged
+git diff
+git log -5 --oneline
+```
 
-   **Principle**: Group by cohesive work done together, even across different scopes.
+### 2. Understand the Changes
 
-   Examples of good groupings:
-   - Command implementation + learnings about that command
-   - Vision document + ADRs created during vision work
-   - New command + CLAUDE.md reference update
-   - Feature spec + design + plan (all created together)
-   - Bug fix + tests for that fix
+Analyze what's changed:
+- New files added
+- Files modified
+- Files deleted
+- Which features are affected
 
-   Common groupings by category:
-   - Framework changes (docs/framework.md, command definitions)
-   - Feature-specific changes (docs/feature-specs/, docs/feature-designs/, docs/feature-plans/, implementation)
-   - Documentation (README, CLAUDE.md, architecture docs)
-   - Vision/planning (docs/planning/VISION.md, FEATURES.md, DEPENDENCIES.md)
-   - New commands (.claude/commands/)
-   - Build/tooling (package.json, tsconfig, etc.)
+### 3. Group Changes Logically
 
-   **Note**: Prefer grouping work that was done together in the same session/context over strict scope boundaries.
+Group changes that should be committed together:
+- Related to same feature
+- Part of same logical change
+- Following conventional commit types
 
-3. **Determine commit type and scope**
+**Commit types:**
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation only
+- `style`: Formatting, no code change
+- `refactor`: Code change without feature/fix
+- `test`: Adding/updating tests
+- `chore`: Build, tooling, maintenance
 
-   **Types:**
-   - `feat`: New feature or capability
-   - `fix`: Bug fix
-   - `docs`: Documentation only
-   - `refactor`: Code restructuring without behavior change
-   - `chore`: Tooling, dependencies, build config
-   - `test`: Adding or updating tests
+### 4. Draft Commit Messages
 
-   **Scopes (examples):**
-   - `framework`: Changes to the development framework
-   - `<feature-id>`: Changes specific to a feature (e.g., FT-001)
-   - `design`: Design pattern documentation
-   - `vision`: Project vision and planning
-   - `commands`: Command definitions
-   - `docs`: General documentation
+For each group, draft commit message:
 
-   **When work crosses scopes:**
-   - Use comma-separated scopes: `feat(commands,docs): enhance vision workflow and record learnings`
-   - Order scopes by significance: most important first
+```
+type(scope): brief description
 
-4. **Propose commits**
+Longer explanation if needed.
+- Detail 1
+- Detail 2
 
-   For each proposed commit, show:
-   - **Message**: `type(scope): description`
-   - **Files**: List of files to include
-   - **Rationale**: Brief explanation of why these files are grouped together
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
-   Example:
-   ```
-   Commit 1: feat(commands): add commit workflow command
-   Files:
-     - .claude/commands/commit.md
-   Rationale: New command for analyzing and grouping git commits
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+```
 
-   Commit 2: docs(framework): update command reference
-   Files:
-     - CLAUDE.md
-   Rationale: Add /commit to available commands list
-   ```
+### 5. Present Plan and Get Confirmation
 
-5. **Get user confirmation**
-   - Ask: Do you want to proceed with these commits?
-   - Ask: Do you want to adjust any groupings?
-   - If adjustments requested, iterate on the proposal
+**CRITICAL**: ALWAYS use `AskUserQuestion` to present proposed groups and get user confirmation, even if:
+- There is only one commit group
+- The grouping seems obvious or trivial
+- All changes are clearly related
 
-6. **Execute commits**
-   - For each approved commit:
-     - Stage the specific files: `git add <files>`
-     - Create commit with message: `git commit -m "type(scope): description"`
-     - Show success confirmation
+Include the full group breakdown with file lists in the question text.
+
+- **IMPORTANT**: Do NOT use markdown formatting (code blocks, bold, italics, etc.) in the actual question text passed to AskUserQuestion - it doesn't support markdown rendering
+- Use plain text with clear visual structure (indentation, line breaks, simple characters like dashes and numbers)
+
+Present options:
+- **Option 1**: "Proceed with these N commit group(s)" - Accept the proposed distribution
+- **Option 2** (conditional): If there are 4+ groups, offer "Merge into fewer commits"
+- **Note**: Do NOT include "Other" as an option - the system adds it automatically
+
+Example format:
+```
+Question: "I've analyzed the changes and propose the following commit groups:
+
+feat(CORE-002): add audio capture functionality
+   - src/audio/capture.py (new)
+   - src/audio/__init__.py (modified)
+   - tests/test_audio.py (new)
+
+docs: update CLAUDE.md with current focus
+   - CLAUDE.md (modified)
+
+How would you like to proceed?"
+
+Options:
+- "Proceed with these 2 commit groups"
+- [Only if 4+ groups] "Merge into fewer commits"
+```
+
+### 6. Execute Commits
+
+For each approved commit:
+```bash
+git add [files]
+git commit -m "type(scope): description"
+```
+
+For commits with body text:
+```bash
+git add [files]
+git commit -m "$(cat <<'EOF'
+type(scope): description
+
+Optional body with additional details.
+EOF
+)"
+```
+
+## Guidelines
+
+**Commit message quality:**
+- Use imperative mood in the description (present tense, not past or continuous)
+  - **WRONG**: "adding new feature" (present continuous)
+  - **WRONG**: "added new feature" (past tense)
+  - **RIGHT**: "add new feature" (imperative)
+- No period at end of subject line
+- Subject line under 50-72 characters
+- Body wrapped at 72 chars when needed
+- **CRITICAL**: Do NOT use the exclamation mark after the type/scope to indicate breaking changes. Use the `BREAKING CHANGE:` footer instead
+
+**Grouping rules:**
+- **IMPORTANT**: Do NOT mix unrelated changes in a single commit
+- Each commit should represent a single logical change
+- Don't mix features in one commit
+- Separate formatting from logic changes
+- Separate tests from implementation (unless closely related)
+- Keep commits atomic but meaningful
+
+**Examples:**
+
+**WRONG** - Mixing unrelated changes:
+```bash
+git add app/services/auth.py app/services/exception_handler.py
+git commit -m "fix: update auth and exception handler"
+```
+
+**RIGHT** - Separate commits for unrelated changes:
+```bash
+# First commit
+git add app/services/auth.py
+git commit -m "fix(auth): resolve token expiration issue"
+
+# Second commit
+git add app/services/exception_handler.py
+git commit -m "refactor(errors): simplify exception handler logic"
+```
+
+**Safety:**
+- Never force push
+- Never modify git config
+- Never skip hooks unless explicitly requested
+- Warn before committing to main/master
 
 ## Workflow
 
-**This is a semi-automated process:**
-- Analyze git state thoroughly
-- Propose logical groupings based on related work
-- Use conventional commit format consistently
-- Always get user approval before executing
-- Execute commits in sequence after confirmation
-
-## Notes
-
-- If changes are too large or complex, suggest breaking into smaller logical commits
-- If a change doesn't fit any grouping, ask user for guidance
-- Maintain consistency with project's commit history style
-- Consider creating separate commits for different types of work even in same files
+**This is a collaborative process:**
+1. Analyze changes (git status, git diff)
+2. Understand what's changed
+3. Group logically (related changes together)
+4. Draft commit messages (conventional commits format)
+5. Present plan and get user confirmation (AskUserQuestion)
+6. Execute commits (git add + git commit)
