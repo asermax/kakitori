@@ -68,7 +68,7 @@ python scripts/features.py status show FEATURE-ID         # Detailed view
 **Description**: Transcribe audio with speaker diarization using Gemini, with interactive speaker identification and multi-turn processing
 
 ### PROCESS-002: Multi-LLM Provider Support via llm Library
-**Status**: ✓ Defined
+**Status**: ✓ Design
 **Complexity**: Hard
 **Description**: Replace direct Gemini API integration with Simon Willison's llm library to support multiple LLM providers (OpenAI, Anthropic, etc.) while defaulting to Gemini. Includes provider-specific file upload handling and graceful feature degradation for providers that don't support audio natively or structured outputs.
 
