@@ -19,6 +19,11 @@ $ARGUMENTS - Optional, can be:
 **Backlog file:**
 @docs/planning/BACKLOG.md
 
+**Feature documentation:**
+`@docs/planning/FEATURES.md` - Feature inventory for related features
+`@docs/architecture/README.md` - ADR index (for Q- items about decisions)
+`@docs/design/README.md` - DES index (for questions about patterns)
+
 **Script reference:**
 `scripts/backlog.py` - CLI tool for backlog management
 
@@ -65,14 +70,19 @@ If arguments provided, parse action and execute appropriate flow.
    - If type missing, ask: "What type? (bug, idea, improvement, tech-debt, question)"
    - If description missing, ask: "Brief description?"
 
-2. **Check for duplicates**
+2. **Search existing documentation**
+   - Search FEATURES.md for features that might relate to the item
+   - For Q- items: check ADR and DES indexes to see if question relates to existing decisions
+   - Note related features/decisions for later use
+
+3. **Check for duplicates**
    - Run `python scripts/backlog.py check "<description>"`
    - If matches found, show them and ask:
      - "Is this a duplicate of [ID]?" → Run `backlog.py duplicate <new> <existing>`
      - "Add as new" → Continue
      - "Link as related" → Continue, add related ID
 
-3. **Refine the item**
+4. **Refine the item**
 
    Review the initial description and help make it unambiguous:
 
@@ -92,7 +102,11 @@ If arguments provided, parse action and execute appropriate flow.
       - Include motivation if idea
       - Enough detail to pick up later
 
-   d. **Show proposed item and confirm**
+   d. **Suggest related features/decisions**
+      - Based on documentation search (step 2), suggest `--related FEATURE-ID`
+      - For Q- items: note if an existing ADR/DES might already answer the question
+
+   e. **Show proposed item and confirm**
       ```
       Title: [refined title]
       Type: [type]
@@ -103,7 +117,7 @@ If arguments provided, parse action and execute appropriate flow.
       Does this capture it correctly? (yes/adjust)
       ```
 
-4. **Create item**
+5. **Create item**
    - Run `python scripts/backlog.py add <type> "<title>" --priority N --related X --notes "..."`
    - Confirm: "Created [ID]: [title]"
 

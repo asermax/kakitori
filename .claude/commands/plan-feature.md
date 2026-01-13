@@ -22,6 +22,9 @@ Feature ID: $ARGUMENTS
 @docs/feature-specs/$ARGUMENTS.md - What to build (requirements)
 @docs/feature-designs/$ARGUMENTS.md - Why/how (design rationale)
 
+**Backlog:**
+@docs/planning/BACKLOG.md - Related bugs, improvements, tech-debt
+
 **Project decisions:**
 @docs/architecture/README.md - Architecture decisions (ADRs)
 @docs/design/README.md - Design patterns (DES)
@@ -75,7 +78,30 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
      - Enter iteration mode as appropriate
    - If no plan exists: proceed with initial creation
 
-1. **Research phase** (silent, thorough)
+1. **Identify Related Backlog Items**
+
+   1. Read BACKLOG.md and identify items related to this feature:
+      - Items with `--related $ARGUMENTS`
+      - BUG- items that might need fixing during implementation
+      - DEBT- items that should be addressed while in this area
+      - IMP- items that could be incorporated
+
+   2. If related items found, present them:
+      ```
+      "Found N backlog items that could be addressed during this feature's implementation:
+
+      [ ] BUG-002: Null pointer when input is empty
+      [ ] DEBT-003: Extract common validation logic
+      [ ] IMP-001: Add progress indicator
+
+      Which items should be included in the implementation plan? (select numbers, 'all', or 'none')"
+      ```
+
+   3. Track selected items - they will be:
+      - Incorporated into the implementation plan steps
+      - Automatically resolved after implementation completes
+
+2. **Research phase** (silent, thorough)
    - Read feature spec (`docs/feature-specs/$ARGUMENTS.md`)
    - Read feature design (`docs/feature-designs/$ARGUMENTS.md`)
    - Read dependency specs and designs from "Requires:" field in spec
@@ -88,7 +114,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
    - Build complete understanding without asking questions
    - Proposals must be grounded in actual knowledge, not assumptions
 
-2. **Draft complete implementation plan**
+3. **Draft complete implementation plan**
    - Create full plan document following template
    - Cover all sections:
      - Pre-implementation checklist (dependencies, relevant ADRs/DES, code to read)
@@ -103,18 +129,19 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
    - Base choices on research findings
    - Ensure steps follow design rationale
    - Clearly note any uncertainties or assumptions
+   - Include section for related backlog items (if selected in step 1)
 
-3. **Present proposal for review**
+4. **Present proposal for review**
    - Show complete plan document to user
    - Highlight any uncertainties and ask about them
    - Invite user feedback: "What needs adjustment in this plan?"
 
-4. **Iterate based on feedback**
+5. **Iterate based on feedback**
    - Apply user corrections, additions, or changes
    - Re-present updated sections if significant changes
    - Repeat until user approves the plan
 
-5. **External validation**
+6. **External validation**
    - Dispatch a general-purpose subagent using the Task tool to review the completed plan
    - Provide minimal context: feature spec, feature design, ADR index, DES index, completed plan
    - Request structured critique covering:
@@ -128,9 +155,9 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
    - Review subagent findings with user
    - Discuss which recommendations to accept
 
-6. **Finalize with iteration check**
+7. **Finalize with iteration check**
    - Ask: "Should we iterate based on validation feedback, or is the plan complete?"
-   - If gaps to address → refine steps (go back to step 4)
+   - If gaps to address → refine steps (go back to step 5)
    - If complete → finalize document to `docs/feature-plans/$ARGUMENTS.md`
 
 ## Workflow

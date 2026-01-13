@@ -20,6 +20,9 @@ Feature ID: $ARGUMENTS
 @docs/feature-designs/$ARGUMENTS.md - Why/how (design rationale)
 @docs/feature-plans/$ARGUMENTS.md - Implementation steps to follow
 
+**Backlog:**
+@docs/planning/BACKLOG.md - Items to address during implementation
+
 **Project decisions:**
 @docs/architecture/README.md - Architecture decisions (ADRs)
 @docs/design/README.md - Design patterns (DES)
@@ -48,6 +51,9 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
 
 1. **Review plan and decisions** (silent)
    - Read implementation plan (`docs/feature-plans/$ARGUMENTS.md`)
+   - Check implementation plan for "Related Backlog Items" section
+   - These items were already approved during planning - no need to ask again
+   - Note which items should be automatically resolved after implementation
    - Read spec and design
    - **Read full ADR/DES documents (not just indexes):**
      - Identify ADRs/DES listed in plan's pre-implementation checklist
@@ -145,7 +151,18 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
      - **Update DES (evolve)**: Better approach found, keeps original ID with version history
      - **Create new DES**: Correction introduces repeatable pattern
 
-9. **Commit**
+9. **Finalize and Resolve Backlog**
+
+   **Automatically resolve backlog items from plan:**
+
+   For each item listed in the plan's "Related Backlog Items" section:
+   - `python scripts/backlog.py fix <ID> --commit <HASH>`
+
+   Report: "Implementation complete. Resolved N backlog items: BUG-002, DEBT-003, IMP-001"
+
+   **Note:** No user confirmation needed - items were already approved during `/plan-feature`.
+
+10. **Commit**
     - Create atomic commit with feature ID and brief description
     - Follow commit message conventions
     - Update CLAUDE.md current focus

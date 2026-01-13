@@ -36,6 +36,9 @@ If a backlog item ID is provided (e.g., `/decision Q-001`):
 @docs/architecture/README.md - Architecture Decision Records (ADRs)
 @docs/design/README.md - Design Patterns (DES)
 
+**Backlog:**
+@docs/planning/BACKLOG.md - Questions and related items
+
 **Features document (if exists):**
 @docs/planning/FEATURES.md - Feature inventory to check for affected features
 
@@ -83,10 +86,28 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
      - Read current decision document
      - Read docs/planning/FEATURES.md to identify affected features
      - Summarize current state
-     - Present complete updated proposal (follow steps 1-3 for updates)
+     - Present complete updated proposal (follow steps 2-4 for updates)
    - If creating new: proceed with creation workflow
 
-1. **Determine decision type** (if creating new)
+1. **Identify Related Backlog Items**
+
+   1. Search BACKLOG.md for related items:
+      - Q- items that might be answered by this decision
+      - Other items whose resolution depends on this decision
+
+   2. If related items found (beyond the Q-XXX being documented if any), present them:
+      ```
+      "Found N backlog items that might be resolved by this decision:
+
+      [ ] Q-003: Should we use library X or Y?
+      [ ] Q-007: What's our caching strategy?
+
+      Which items will this decision resolve? (select numbers, 'all', or 'none')"
+      ```
+
+   3. Track selected items for automatic resolution at the end
+
+2. **Determine decision type** (if creating new)
    - Use AskUserQuestion to present choice:
      - **Question**: "What type of decision are you documenting?"
      - **Header**: "Decision Type"
@@ -95,7 +116,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
        - **DES (Design)**: Evolving patterns and conventions (testing approach, error handling, code style, module organization)
      - **multiSelect**: false
 
-2. **Research phase** (silent, thorough)
+3. **Research phase** (silent, thorough)
    - Read existing decisions from both indexes
    - Read relevant ADRs and DES patterns
    - **For technical decisions involving libraries, frameworks, APIs:**
@@ -107,7 +128,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
    - Build complete understanding without asking questions
    - Proposals must be grounded in actual knowledge, not assumptions
 
-3. **Draft complete decision document**
+4. **Draft complete decision document**
 
    a. **For ADR (Architecture)**
       - Create full ADR document following template
@@ -138,17 +159,17 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
       - Clearly note any uncertainties or assumptions
       - Assign next ID (DES-NNN)
 
-4. **Present proposal for review**
+5. **Present proposal for review**
    - Show complete decision document to user
    - Highlight any uncertainties and ask about them
    - Invite user feedback: "What needs adjustment in this decision?"
 
-5. **Iterate based on feedback**
+6. **Iterate based on feedback**
    - Apply user corrections, additions, or changes
    - Re-present updated sections if significant changes
    - Repeat until user approves the decision
 
-6. **Agent validation**
+7. **Agent validation**
    - Dispatch a general-purpose subagent using the Task tool to review the drafted decision
    - Provide minimal context: the drafted decision document, relevant indexes
 
@@ -171,12 +192,12 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
    - Review subagent findings with user
    - Discuss which recommendations to accept
 
-7. **Finalize with iteration check**
+8. **Finalize with iteration check**
    - Ask: "Should we iterate based on validation feedback, or is the decision ready?"
-   - If gaps/issues to address → refine relevant sections (go back to step 5)
+   - If gaps/issues to address → refine relevant sections (go back to step 6)
    - If complete → proceed to impact analysis
 
-8. **Impact analysis** (if updating existing decision)
+9. **Impact analysis** (if updating existing decision)
    - Understand the change type:
      - Ask: Should we supersede (major change) or evolve (refinement)?
 
@@ -199,7 +220,8 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
      - Update current approach section
      - Add migration notes if behavior changes
 
-9. **Finalization**
+10. **Finalization and Resolve Backlog**
+
    - Create/update decision document in appropriate directory:
      - ADR: `docs/architecture/ADR-NNN-topic.md`
      - DES: `docs/design/DES-NNN-topic.md`
@@ -210,6 +232,13 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
      3. Note affected features/specs/designs that may need updates
      4. Document decision in commit message
    - Present checklist completion to user for confirmation
+
+   **Automatically resolve selected backlog items:**
+
+   For each Q- item the user selected to include (from step 1):
+   - `python scripts/backlog.py fix <ID>` (answered by decision)
+
+   Report: "Resolved N backlog items: Q-003, Q-007"
 
 ## Gap Detection Questions
 

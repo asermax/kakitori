@@ -40,6 +40,9 @@ If a backlog item ID is provided (e.g., `/add-feature IDEA-001`):
 **Dependency matrix:**
 @docs/planning/DEPENDENCIES.md - Feature dependencies and implementation phases
 
+**Backlog:**
+@docs/planning/BACKLOG.md - Related ideas, bugs, improvements
+
 ## General Guidance
 
 Follow the collaborative workflow principles in @docs/command-guidance.md.
@@ -77,14 +80,37 @@ If not provided in arguments, ask:
 - Why is it needed?"
 ```
 
-### 2. Research Existing Features
+### 2. Identify Related Backlog Items
+
+1. Search BACKLOG.md for related items:
+   - IDEA- items that might be part of this feature
+   - BUG- items that might be fixed by this feature
+   - Q- items that this feature might need to resolve
+
+2. If related items found, present them:
+   ```
+   "Found N backlog items that might relate to this feature:
+
+   [ ] IDEA-005: Support CSV export
+   [ ] BUG-010: Export fails with special characters
+   [ ] Q-004: What formats should export support?
+
+   Which items should be included in this feature? (select numbers, 'all', or 'none')"
+   ```
+
+3. Track selected items:
+   - IDEA- items will be promoted to this feature
+   - BUG-/IMP- items will be linked as related
+   - Q- items will be noted as needing resolution during spec
+
+### 3. Research Existing Features
 
 Read FEATURES.md to understand:
 - Existing categories and their purposes
 - Feature naming conventions
 - Complexity patterns for similar features
 
-### 3. Propose Feature Details
+### 4. Propose Feature Details
 
 Based on the description and existing patterns, draft a complete proposal:
 
@@ -100,13 +126,13 @@ Based on the description and existing patterns, draft a complete proposal:
 Does this look right? What needs adjustment?"
 ```
 
-### 4. Iterate Based on Feedback
+### 5. Iterate Based on Feedback
 
 - Apply user corrections to category, complexity, or dependencies
 - Re-present if significant changes
 - Repeat until user approves
 
-### 5. Update FEATURES.md
+### 6. Update FEATURES.md
 
 Add new feature entry following the existing format:
 
@@ -117,7 +143,7 @@ Add new feature entry following the existing format:
 **Description**: [description]
 ```
 
-### 6. Update DEPENDENCIES.md
+### 7. Update DEPENDENCIES.md
 
 Add to dependency matrix:
 
@@ -130,7 +156,7 @@ If dependencies identified:
 python scripts/features.py deps add-dep CATEGORY-NNN DEP-ID
 ```
 
-### 7. Recalculate Phases
+### 8. Recalculate Phases
 
 Update phase assignments based on new dependencies:
 
@@ -146,9 +172,9 @@ Reason: [Depends on X which is in Phase M, so this goes in Phase M+1]
          OR [No dependencies, added to Phase 1]"
 ```
 
-### 8. Summary and Next Steps
+### 9. Summary, Link Backlog, and Next Steps
 
-Present summary:
+Present summary including related backlog items:
 ```
 "Feature added:
 
@@ -157,7 +183,18 @@ Description: [description]
 Complexity: [complexity]
 Dependencies: [list or 'None']
 Phase: N
+Related backlog items: IDEA-005 (promoted), BUG-010, Q-004 (linked)
+```
 
+**Automatically update backlog items:**
+
+For each item the user selected to include (from step 2):
+- IDEA- items: `python scripts/backlog.py promote <ID> --feature CATEGORY-NNN`
+- BUG-/IMP-/Q- items: Update item with `--related CATEGORY-NNN`
+
+Report: "Promoted IDEA-005, linked BUG-010 and Q-004 to CATEGORY-NNN"
+
+```
 Next steps:
 - Create spec: /spec-feature CATEGORY-NNN
 - Or continue adding more features

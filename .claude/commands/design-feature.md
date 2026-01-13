@@ -21,6 +21,9 @@ Feature ID: $ARGUMENTS
 **Feature spec:**
 @docs/feature-specs/$ARGUMENTS.md - The specification we're designing for
 
+**Backlog:**
+@docs/planning/BACKLOG.md - Related bugs, ideas, improvements, questions
+
 **Project decisions:**
 @docs/architecture/README.md - Architecture decisions (ADRs)
 @docs/design/README.md - Design patterns (DES)
@@ -64,7 +67,28 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
      - Enter iteration mode as appropriate
    - If no design exists: proceed with initial creation
 
-1. **Research phase** (silent, thorough)
+1. **Identify Related Backlog Items**
+
+   1. Read BACKLOG.md and identify items related to this feature:
+      - Items with `--related $ARGUMENTS`
+      - Q- items that might be answered by design decisions
+      - DEBT- items that might be addressed by the design approach
+      - IMP- items that could be incorporated
+
+   2. If related items found, present them:
+      ```
+      "Found N backlog items related to this feature's design:
+
+      [ ] Q-002: What caching strategy should we use?
+      [ ] DEBT-001: Refactor data access layer
+      [ ] IMP-004: Support batch operations
+
+      Which items should be addressed in this design? (select numbers, 'all', or 'none')"
+      ```
+
+   3. Track selected items for automatic resolution at the end
+
+2. **Research phase** (silent, thorough)
    - Read feature spec (`docs/feature-specs/$ARGUMENTS.md`)
    - **Read ADR/DES pattern documents (not just indexes):**
      - Start with `docs/architecture/README.md` and `docs/design/README.md` to identify relevant patterns
@@ -80,7 +104,7 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
    - Build complete understanding without asking questions
    - Proposals must be grounded in actual knowledge, not assumptions
 
-2. **Draft complete design proposal**
+3. **Draft complete design proposal**
    - Create full design document following `docs/feature-designs/TEMPLATE.md`
    - Cover all sections:
      - Problem context (problem being solved, constraints, interactions)
@@ -93,17 +117,17 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
    - Base all choices on research findings
    - Clearly note any uncertainties or assumptions
 
-3. **Present proposal for review**
+4. **Present proposal for review**
    - Show complete design document to user
    - Highlight any uncertainties and ask about them
    - Invite user feedback: "What needs adjustment in this design?"
 
-4. **Iterate based on feedback**
+5. **Iterate based on feedback**
    - Apply user corrections, additions, or changes
    - Re-present updated sections if significant changes
    - Repeat until user approves the design
 
-5. **External validation**
+6. **External validation**
    - Dispatch a general-purpose subagent using the Task tool to review the completed design
    - Provide minimal context: feature spec, ADR index, DES index, completed design
    - Request structured critique covering:
@@ -117,10 +141,23 @@ Follow the collaborative workflow principles in @docs/command-guidance.md.
    - Review subagent findings with user
    - Discuss which recommendations to accept
 
-6. **Finalize with iteration check**
+7. **Finalize with iteration check**
    - Ask: "Should we iterate based on validation feedback, or is the design complete?"
-   - If gaps to address → refine relevant sections (go back to step 4)
+   - If gaps to address → refine relevant sections (go back to step 5)
    - If complete → finalize document to `docs/feature-designs/$ARGUMENTS.md`
+
+8. **Finalize and Resolve Backlog**
+
+   Finalize document to `docs/feature-designs/$ARGUMENTS.md`
+
+   **Automatically resolve selected backlog items:**
+
+   For each item the user selected to include (from step 1):
+   - Q- items: `python scripts/backlog.py fix <ID>` (answered by design)
+   - DEBT- items: `python scripts/backlog.py fix <ID>` (addressed in design)
+   - IMP- items: Note in item that it's incorporated in feature design
+
+   Report: "Resolved N backlog items: Q-002, DEBT-001"
 
 ## Workflow
 
