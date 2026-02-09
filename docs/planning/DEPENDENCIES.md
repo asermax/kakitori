@@ -53,3 +53,13 @@ Features that depend on Phase 1:
 
 - **Phase 1** is sequential: single feature
 - **Phase 2** can be parallelized: CORE-002, RECORD-001, and PROCESS-001 are independent of each other
+
+---
+
+## External Dependencies
+
+### Potential Future Integrations
+
+| Service | Use Case | Status | Notes |
+|---------|----------|--------|-------|
+| **Voxtral** | Speech-to-text transcription | Research | Mistral's STT API with speaker diarization. Evaluating vs current Gemini setup. See IDEA-001 in BACKLOG.md. |
