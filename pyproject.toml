@@ -18,11 +18,6 @@ kakitori = "kakitori:main"
 
 [tool.semantic_release]
 version_toml = ["pyproject.toml:project.version"]
-build_command = """
-    uv lock --upgrade-package kakitori
-    git add uv.lock
-    uv build
-"""
 
 [build-system]
 requires = ["uv_build>=0.9.8,<0.10.0"]
