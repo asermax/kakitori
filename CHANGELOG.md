@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.1.0 (2026-07-10)
+
+### Features
+
+- **transcribe**: Replace Gemini with Deepgram nova-3
+  ([`767760b`](https://github.com/asermax/kakitori/commit/767760b3d616c9807ae00b55e1d40f093d701a4d))
+
+
 ## v1.0.2 (2026-02-11)
 
 ### Bug Fixes
