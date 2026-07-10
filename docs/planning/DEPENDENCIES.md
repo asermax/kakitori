@@ -37,7 +37,7 @@ Features that depend on Phase 1:
 - **RECORD-001**: Audio Recording with Combined Sources (depends: CORE-001)
 - **PROCESS-001**: Audio Transcription Processing (depends: CORE-001)
 
-**Test Milestone**: "CLI uses cyclopts for type-hint-driven parsing. Record command captures microphone and system audio. Process command transcribes audio with speaker diarization."
+**Test Milestone**: "CLI uses cyclopts for type-hint-driven parsing. Record command captures microphone and system audio. Process command transcribes audio with speaker diarization via Deepgram."
 
 ---
 
@@ -62,4 +62,4 @@ Features that depend on Phase 1:
 
 | Service | Use Case | Status | Notes |
 |---------|----------|--------|-------|
-| **Voxtral** | Speech-to-text transcription | Research | Mistral's STT API with speaker diarization. Evaluating vs current Gemini setup. See IDEA-001 in BACKLOG.md. |
+| **Voxtral** | Speech-to-text transcription | Research | Mistral's STT API with speaker diarization. Evaluating vs current Deepgram (nova-3) setup. See IDEA-001 in BACKLOG.md. |

@@ -3,7 +3,7 @@ from pathlib import Path
 from kakitori.logging import logger
 from .output import format_transcript
 from .speaker import apply_speaker_names, identify_speakers
-from .transcribe import cleanup_file, transcribe_audio
+from .transcribe import transcribe_audio
 
 
 def run_process(
@@ -12,20 +12,18 @@ def run_process(
     output: str | None,
     stdout: bool,
     skip_speaker_id: bool,
-    participant_count: int,
 ) -> None:
     """Execute the transcription processing workflow.
 
     Args:
         audio_file: Path to audio file
-        api_key: Gemini API key
+        api_key: Deepgram API key
         output: Custom output path or None
         stdout: Whether to print to stdout
         skip_speaker_id: Whether to skip speaker identification
-        participant_count: Number of participants in the recording
     """
     # Step 1: Transcribe audio
-    transcription, file_name = transcribe_audio(audio_file, api_key, participant_count)
+    transcription = transcribe_audio(audio_file, api_key)
 
     # Step 2: Interactive speaker identification (unless skipped)
     if not skip_speaker_id:
@@ -54,7 +52,3 @@ def run_process(
 
         output_path.write_text(formatted_output, encoding="utf-8")
         logger.info(f"✓ Transcript saved to: {output_path}")
-
-    # Step 4: Cleanup uploaded file
-    cleanup_file(api_key, file_name)
-    logger.info("✓ Cleanup complete")

@@ -14,15 +14,13 @@ So that I have a readable text transcript with proper speaker attribution.
 
 ## Behavior
 
-The process feature takes an audio file and produces a timestamped transcript with speaker labels. It uses Google's Gemini Flash model for AI-powered transcription with automatic speaker diarization. The workflow consists of four main steps:
+The process feature takes an audio file and produces a timestamped transcript with speaker labels. It uses Deepgram's nova-3 model for AI-powered transcription with automatic speaker diarization. The workflow consists of three main steps:
 
-1. **Audio Upload and Transcription**: The audio file is uploaded to Gemini's API and transcribed using a multi-turn conversation approach to handle recordings of any length.
+1. **Transcription**: The audio file is sent to Deepgram's prerecorded API in a single synchronous request and transcribed with diarized utterances (speaker index, start/end times, transcript text) returned all at once, regardless of recording length.
 
 2. **Interactive Speaker Identification**: After transcription, users can optionally review and assign names to speakers through an interactive menu that plays audio snippets for verification.
 
 3. **Output Formatting**: The transcript is formatted as plain text with timestamps and speaker labels.
-
-4. **Cleanup**: The uploaded audio file is deleted from Gemini's servers.
 
 ## Acceptance Criteria
 
@@ -30,19 +28,18 @@ The process feature takes an audio file and produces a timestamped transcript wi
 
 - Given an audio file exists at the specified path
   When the user runs `kakitori process <audio_file>`
-  Then the audio is uploaded to Gemini API
+  Then the audio is sent to Deepgram's prerecorded API in a single request
   And the transcription is performed with speaker diarization
   And the user is prompted to identify speakers
   And a text file is saved with the same name as the audio file (with .txt extension)
 
-### Multi-Turn Transcription for Long Recordings
+### Transcription for Recordings of Any Length
 
-- Given an audio recording longer than ~20 minutes
+- Given an audio recording of any length (including recordings exceeding 2 hours)
   When transcription is performed
-  Then the system uses multiple conversation turns to process the entire recording
-  And each turn transcribes approximately 20 minutes of audio
-  And the system continues until an empty segments array is returned
-  And all segments are combined into a single transcription
+  Then the system sends a single `transcribe_file` request to Deepgram
+  And Deepgram returns all diarized utterances for the entire recording in one response
+  And all utterances are converted into transcription segments in chronological order
 
 ### Custom Output Path
 
@@ -62,17 +59,7 @@ The process feature takes an audio file and produces a timestamped transcript wi
 - Given the user specifies `--skip-speaker-id` flag
   When transcription completes
   Then the interactive speaker identification is skipped
-  And generic speaker labels (Speaker 1, Speaker 2) or AI-detected names are preserved
-
-### Participant Count
-
-- Given the user specifies `-p <count>` option
-  When transcription starts
-  Then the participant count is passed to the AI for better diarization
-
-- Given the user does not specify `-p` option
-  When the process command starts
-  Then the user is prompted to enter the number of participants
+  And generic speaker labels (Speaker 1, Speaker 2, ...) are preserved
 
 ### Speaker Identification with Audio Playback
 
@@ -82,7 +69,8 @@ The process feature takes an audio file and produces a timestamped transcript wi
   And the user can select any speaker to see their segments
   And the user can play audio snippets to verify speaker identity
   And the user can assign names to speakers
-  And speakers with AI-detected names are pre-populated
+  (Deepgram speakers are numbered only — e.g. "Speaker 1", "Speaker 2" — real names
+  always come from this interactive step, never from the transcription provider)
 
 ### Paginated Segment View
 
@@ -100,7 +88,7 @@ The process feature takes an audio file and produces a timestamped transcript wi
 
 ### Error Cases
 
-- Given GEMINI_API_KEY is not configured
+- Given DEEPGRAM_API_KEY is not configured
   When the user runs the process command
   Then an error message is displayed explaining how to configure the key
 
@@ -108,20 +96,16 @@ The process feature takes an audio file and produces a timestamped transcript wi
   When the user runs the process command
   Then an error message is displayed
 
-- Given Gemini reports the file processing state as "FAILED"
+- Given Deepgram returns an error response
   When processing completes
-  Then an exception is raised with "Audio file processing failed"
-
-- Given the AI returns an invalid or empty response
-  When parsing the transcription
-  Then an exception is raised with the turn number, finish reason, and response text
+  Then an exception is raised with the error details from Deepgram
 
 ## Dependencies
 
 ### Python Dependencies
 
-- `google-genai` - Google Gemini API client for transcription
-- `pydantic` - Data validation and structured output schema
+- `deepgram-sdk` - Deepgram API client for transcription
+- `pydantic` - Internal data models for transcription segments
 - `questionary` - Interactive prompts and menus
 - `rich` - Terminal UI tables and formatting
 - `python-mpv` - Audio snippet playback
@@ -129,8 +113,8 @@ The process feature takes an audio file and produces a timestamped transcript wi
 ### System Requirements
 
 - `mpv` binary - Required for audio playback during speaker identification
-- Network access to Gemini API
-- `GEMINI_API_KEY` configured (env, local .env, or ~/.config/kakitori/.env)
+- Network access to Deepgram API
+- `DEEPGRAM_API_KEY` configured (env, local .env, or ~/.config/kakitori/.env)
 
 ## Technical Notes
 
@@ -144,10 +128,9 @@ The process feature takes an audio file and produces a timestamped transcript wi
 
 ### Model Configuration
 
-- Model: `gemini-3-flash-preview`
-- Temperature: 0.3 (low but non-zero to prevent repetition loops)
-- Max output tokens: 65536
-- Structured output via Pydantic schema
+- Model: `nova-3`
+- Request options: `diarize=True`, `utterances=True`, `punctuate=True`, `detect_language=True`
+- Single synchronous `transcribe_file` call — no polling, no per-turn continuation
 
 ### Output Format
 
@@ -159,7 +142,6 @@ The process feature takes an audio file and produces a timestamped transcript wi
 
 ### Design Decisions
 
-- **Multi-turn approach**: Handles recordings of arbitrary length by processing ~20 minutes per turn, avoiding token limits
-- **AI name detection**: Speaker detection attempts to infer names from conversation context before falling back to generic labels
-- **Temperature 0.3**: Tuned to prevent repetition loops while maintaining accuracy
+- **Single-request transcription**: Deepgram's prerecorded API handles recordings of arbitrary length in one call, so there is no chunking or continuation loop to manage
+- **Numbered speakers only**: Deepgram diarization returns numbered speakers (Speaker 1, Speaker 2, ...) with no name inference; real names always come from the interactive speaker-identification step
 - **Adaptive snippets**: Duration bounded by next segment to avoid audio overlap during playback

@@ -26,20 +26,19 @@ This document captures the design rationale for the audio transcription feature,
 
 Users have audio recordings of conversations and need readable text transcripts with proper speaker attribution. The challenges are:
 
-1. **Long recordings**: Meetings can exceed 2 hours, but API output limits constrain single-request transcription
-2. **Speaker identification**: AI may use generic labels ("Speaker 1") requiring human verification
+1. **Long recordings**: Meetings can exceed 2 hours; the transcription approach must handle full recordings reliably
+2. **Speaker identification**: The provider only returns numbered labels ("Speaker 1") requiring human verification to assign real names
 3. **Audio verification**: Users need to hear speaker voices to correctly assign names
-4. **File management**: Uploaded audio files consume API storage and need cleanup
+4. **Reliable single-call transcription**: The transcription call must return complete, ordered results for the whole recording
 
 **Constraints:**
 
-- Gemini API has 65536 max output tokens limit
 - Audio snippet playback requires local mpv media player
-- Temperature tuning critical (too low causes repetition loops)
+- Deepgram's prerecorded API is synchronous; the request blocks until the full response is ready
 
 ## Design Overview
 
-The processing workflow follows a four-stage pipeline:
+The processing workflow follows a three-stage pipeline:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -50,9 +49,8 @@ The processing workflow follows a four-stage pipeline:
 │      ▼                                                           │
 │  ┌─────────────┐                                                │
 │  │ TRANSCRIBE  │  transcribe.py                                 │
-│  │             │  - Upload to Gemini API                        │
-│  │             │  - Multi-turn chat (ADR-004)                   │
-│  │             │  - Structured output (Pydantic)                │
+│  │             │  - Single request to Deepgram nova-3           │
+│  │             │  - Diarized utterances returned in one response│
 │  └──────┬──────┘                                                │
 │         │ Transcription                                          │
 │         ▼                                                        │
@@ -67,12 +65,6 @@ The processing workflow follows a four-stage pipeline:
 │  ┌─────────────┐                                                │
 │  │   FORMAT    │  output.py                                     │
 │  │             │  - [MM:SS] Speaker: content                    │
-│  └──────┬──────┘                                                │
-│         │ formatted text                                         │
-│         ▼                                                        │
-│  ┌─────────────┐                                                │
-│  │   CLEANUP   │  transcribe.py                                 │
-│  │             │  - Delete from Gemini API                      │
 │  └─────────────┘                                                │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -82,58 +74,46 @@ The processing workflow follows a four-stage pipeline:
 | Module | Responsibility |
 |--------|----------------|
 | `command.py` | Pipeline orchestration |
-| `transcribe.py` | Gemini API communication, multi-turn transcription |
+| `transcribe.py` | Deepgram API communication, single-request transcription |
 | `speaker.py` | Interactive UI, speaker state management |
 | `audio.py` | Timestamp parsing, mpv playback |
 | `output.py` | Plain text formatting |
-| `models.py` | Pydantic schemas for structured output |
+| `models.py` | Pydantic models for internal transcription data |
 
 ## Data Flow
 
-### Multi-Turn Transcription
+### Single-Request Transcription
 
 ```
 Audio File
     │
     ▼
 ┌────────────────────────────────────────────────────┐
-│ Upload & Wait                                       │
-│   client.files.upload(file=audio_path)             │
-│   while state == "PROCESSING": poll                │
-└────────────────────────────────────────────────────┘
-    │
-    ▼
-┌────────────────────────────────────────────────────┐
-│ Chat Session Setup                                  │
-│   chat = client.chats.create(                      │
-│       model="gemini-3-flash-preview",              │
-│       config={                                     │
-│           response_schema=Transcription,           │
-│           temperature=0.3,                         │
-│           max_output_tokens=65536                  │
-│       }                                            │
+│ Transcribe                                          │
+│   client = DeepgramClient(api_key=api_key)         │
+│   response = client.listen.v1.media.transcribe_file(│
+│       request=audio_bytes,                         │
+│       model="nova-3",                              │
+│       diarize=True,                                │
+│       utterances=True,                             │
+│       punctuate=True,                              │
+│       detect_language=True,                        │
 │   )                                                │
 └────────────────────────────────────────────────────┘
     │
     ▼
 ┌────────────────────────────────────────────────────┐
-│ Turn 1: Audio + Initial Prompt                      │
-│   response = chat.send_message([audio, prompt])    │
-│   all_segments.extend(response.parsed.segments)    │
+│ Convert Utterances                                  │
+│   for utterance in response.results.utterances:    │
+│       segments.append(TranscriptSegment(           │
+│           start_time=format_timestamp(utterance.start),│
+│           speaker=f"Speaker {utterance.speaker + 1}",│
+│           content=utterance.transcript,             │
+│       ))                                            │
 └────────────────────────────────────────────────────┘
     │
     ▼
-┌────────────────────────────────────────────────────┐
-│ Turn N: Continuation Loop                           │
-│   while response.parsed.segments:                  │
-│       response = chat.send_message(CONTINUATION)   │
-│       all_segments.extend(segments)                │
-│                                                    │
-│   Stop when: empty segments array                  │
-└────────────────────────────────────────────────────┘
-    │
-    ▼
-Transcription(segments=all_segments)
+Transcription(segments=segments)
 ```
 
 ### Speaker Identification Flow
@@ -144,10 +124,9 @@ Transcription
     ▼
 ┌────────────────────────────────────────────────────┐
 │ Build Speaker States                                │
-│   For each unique speaker:                         │
+│   For each unique speaker (always "Speaker N"):    │
 │     - Extract segment indices                      │
-│     - Pre-populate name if AI detected one         │
-│     - Create SpeakerState(label, name, indices)    │
+│     - Create SpeakerState(label, name=None, indices)│
 └────────────────────────────────────────────────────┘
     │
     ▼
@@ -185,12 +164,12 @@ Transcription
 
 ## Modeling
 
-### Pydantic Models (Gemini Structured Output)
+### Pydantic Models (Internal Data)
 
 ```python
 class TranscriptSegment(BaseModel):
     start_time: str   # "MM:SS" or "HH:MM:SS"
-    speaker: str      # Name or "Speaker N"
+    speaker: str      # "Speaker N" (Deepgram never returns names)
     content: str      # Verbatim transcription
 
 class Transcription(BaseModel):
@@ -209,39 +188,29 @@ class SpeakerState:
 
 ### Relationships
 
-- `Transcription` is the API response schema and internal data model
+- `Transcription` is an internal data model built from Deepgram's response
 - `SpeakerState` aggregates segment indices for navigation efficiency
 - Speaker mapping (`dict[str, str]`) bridges original labels to user-assigned names
 
 ## Key Decisions
 
-### Decision 1: Multi-Turn Chat for Long Recordings
+### Decision 1: Single-Request Transcription via Deepgram Prerecorded API
 
-**Choice**: Use Gemini chat API with continuation prompts rather than single-request transcription.
+**Choice**: Send the whole audio file in one synchronous `transcribe_file` call rather than uploading, polling, and chunking across multiple conversation turns.
 
-**Why**: Recordings can exceed 2 hours; single request would truncate at token limit.
+**Why**: Deepgram's prerecorded API processes recordings of any length (including 2+ hour meetings) in a single request and returns all diarized utterances at once, so there is no output-token ceiling to chunk around.
 
-**Related**: [ADR-004](../architecture/ADR-004-multi-turn-transcription.md)
-
----
-
-### Decision 2: Pydantic Structured Output Schema
-
-**Choice**: Use Pydantic models with Gemini's `response_schema` parameter.
-
-**Why**: Eliminates fragile JSON parsing; provides type-safe, validated responses.
-
-**Consequences**: Clean data flow, but tied to Gemini's structured output feature.
+**Related**: [ADR-004](../architecture/ADR-004-multi-turn-transcription.md) (superseded — previously documented the Gemini multi-turn chat approach this replaces)
 
 ---
 
-### Decision 3: Temperature 0.3 to Prevent Repetition Loops
+### Decision 2: Internal Pydantic Models for Normalized Output
 
-**Choice**: Use temperature=0.3 rather than temperature=0.
+**Choice**: Keep `TranscriptSegment`/`Transcription` as plain Pydantic models populated from Deepgram's response, rather than as a schema handed to the provider.
 
-**Why**: Temperature=0 caused infinite repetition loops in multi-turn transcription.
+**Why**: Deepgram's `transcribe_file` returns its own typed response object (`response.results.utterances`); Pydantic here is only used to give the rest of the pipeline (speaker ID, formatting) a stable internal shape.
 
-**Consequences**: Reliable completion with minor non-determinism.
+**Consequences**: Clean data flow; no dependency on a provider-side structured-output feature.
 
 ---
 
@@ -265,13 +234,13 @@ class SpeakerState:
 
 ---
 
-### Decision 6: AI Name Pre-Population
+### Decision 6: Name Pre-Population Check Retained as a No-Op Under Deepgram
 
-**Choice**: Pre-populate speaker names when AI detects them from conversation context.
+**Choice**: Keep the "pre-populate assigned_name if the label isn't a generic `Speaker \d+`" check in `speaker.py`, even though Deepgram always returns generic `Speaker N` labels.
 
-**Why**: AI often identifies speakers correctly from introductions or name mentions. Pre-populating saves user effort.
+**Why**: The check is harmless and provider-agnostic; it simply never triggers today because Deepgram has no name-inference capability. Real names always come from the interactive speaker-identification step.
 
-**Implementation**: Check if label matches `Speaker \d+` pattern; if not, use label as assigned name.
+**Implementation**: Check if label matches `Speaker \d+` pattern; if not, use label as assigned name (currently always false with Deepgram).
 
 ## System Behavior
 
@@ -281,22 +250,21 @@ class SpeakerState:
 Given: Audio file meeting.mp3 with 3 speakers
 When: User runs `kakitori process meeting.mp3`
 Then:
-  1. Audio uploaded, transcribed across N turns
+  1. Audio sent to Deepgram in a single request, transcribed in one response
   2. Speaker identification shows 3 speakers
   3. User plays snippets, assigns names
   4. Transcript saved to meeting.txt with names
-  5. Uploaded file deleted from Gemini
 ```
 
 ### Scenario: Skip Speaker Identification
 
 ```
-Given: Recording where AI detected speaker names
+Given: A completed transcription with generic "Speaker N" labels
 When: User runs `kakitori process meeting.mp3 --skip-speaker-id`
 Then:
   1. Transcription generated
   2. Identification skipped
-  3. AI-detected names preserved in output
+  3. Generic "Speaker N" labels preserved in output
 ```
 
 ### Scenario: User Cancels Identification
@@ -325,18 +293,15 @@ Then:
 
 **Uncertainties:**
 
-- Model's decision to return empty segments array is not explicitly documented
-- Maximum recording length that multi-turn reliably handles unknown
-- Error recovery mid-transcription not implemented
+- Maximum recording length/file size Deepgram's prerecorded API reliably handles in a single request is unverified for this project's use cases
+- Error recovery mid-transcription not implemented (single request either succeeds or fails as a whole)
 
 **Assumptions:**
 
 - Users have mpv installed for audio playback
-- Gemini API key has sufficient quota
+- Deepgram API key has sufficient quota
 - Supported formats: mp3, wav, m4a, ogg, flac
 
 **Areas needing clarification:**
 
-- Should continuation prompt include context about where model left off?
-- How to detect and handle skipped audio sections?
-- Checkpoint/resume for interrupted long transcriptions?
+- Should very large/long files be split before sending to Deepgram, or is the single-request approach sufficient at all expected recording lengths?

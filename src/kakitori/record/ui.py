@@ -73,7 +73,7 @@ def select_source(
     return questionary.select(
         f"Select {source_type} source:",
         choices=choices,
-    ).ask()
+    ).unsafe_ask()
 
 
 def confirm_sources(
@@ -103,9 +103,9 @@ def confirm_sources(
         action = questionary.select(
             "Confirm audio sources:",
             choices=choices,
-        ).ask()
+        ).unsafe_ask()
 
-        if action is None or action == "continue":
+        if action == "continue":
             return input_source, monitor_source
 
         if action == "input":
@@ -139,9 +139,9 @@ def prompt_save_location(default_name: str) -> Path:
     filename = questionary.text(
         "Enter filename (or press Enter for default):",
         default=default_name,
-    ).ask()
+    ).unsafe_ask()
 
-    if filename is None or not filename.strip():
+    if not filename.strip():
         filename = default_name
 
     filename = filename.strip()

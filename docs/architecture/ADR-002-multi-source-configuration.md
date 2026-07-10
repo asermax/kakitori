@@ -5,7 +5,7 @@
 
 ## Context
 
-Kakitori requires a Gemini API key for transcription. Different users have different deployment scenarios:
+Kakitori requires a Deepgram API key for transcription. Different users have different deployment scenarios:
 
 - Personal use: Global API key shared across projects
 - Per-project: Different keys for different contexts
@@ -47,7 +47,7 @@ Later sources override earlier ones due to dictionary key replacement.
 
 ### Single source only (environment variables)
 
-- **Description**: Only read `GEMINI_API_KEY` from environment
+- **Description**: Only read `DEEPGRAM_API_KEY` from environment
 - **Why rejected**: Forces `export` on every session or permanent shell config changes
 
 ### Config file with sections (TOML/YAML)

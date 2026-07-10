@@ -14,7 +14,7 @@ So that I can later transcribe conversations that include both local and remote 
 
 ## Behavior
 
-The record feature provides an interactive workflow for recording audio from multiple sources on Linux systems using PulseAudio/PipeWire. It automatically detects available audio sources, allows the user to select or confirm which microphone and system audio monitor to use, then creates a temporary combined audio sink that mixes both sources into a single stream. The recording is captured using ffmpeg with the Opus codec and saved as an OGG file. After recording completes, the user can optionally proceed to transcription if a Gemini API key is configured.
+The record feature provides an interactive workflow for recording audio from multiple sources on Linux systems using PulseAudio/PipeWire. It automatically detects available audio sources, allows the user to select or confirm which microphone and system audio monitor to use, then creates a temporary combined audio sink that mixes both sources into a single stream. The recording is captured using ffmpeg with the Opus codec and saved as an OGG file. After recording completes, the user can optionally proceed to transcription if a Deepgram API key is configured.
 
 ## Acceptance Criteria
 
@@ -126,14 +126,13 @@ The record feature provides an interactive workflow for recording audio from mul
 
 ### Post-Recording Transcription
 
-- Given a Gemini API key is configured
+- Given a Deepgram API key is configured
   When recording completes successfully
   Then the user is prompted "Transcribe the recording now?"
 
 - Given the user confirms transcription
   When prompted
-  Then the user is asked for the participant count
-  And the process command is invoked with the recording file
+  Then the process command is invoked with the recording file
 
 ## Dependencies
 

@@ -1,7 +1,13 @@
 # ADR-004: Multi-Turn Chat for Long Recordings
 
-**Status**: Accepted
+**Status**: Superseded (see note below)
 **Date**: 2026-01-01
+
+## Superseded (2026-07-10)
+
+This decision is no longer in effect. Kakitori dropped the Gemini transcription backend entirely in favor of Deepgram's nova-3 model. Deepgram's prerecorded API (`client.listen.v1.media.transcribe_file(...)`) transcribes a full recording — of any length recordings realistically reach — in a single synchronous request and returns all diarized utterances at once. There is no output-token ceiling forcing chunked continuation, so the multi-turn chat loop, its termination heuristic, and the checkpoint/resume gaps described below no longer apply to the codebase.
+
+The rest of this document is preserved as-is for historical reference; it reflects the reasoning that applied while Gemini was the transcription backend.
 
 ## Context
 

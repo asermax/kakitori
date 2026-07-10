@@ -45,7 +45,7 @@ Items not ready for full feature treatment. Managed via `/backlog` command or `s
 - **Priority**: 3
 - **Related**: PROCESS-001 (Audio Transcription)
 - **Added**: 2026-02-08
-- **Notes**: Research Voxtral (Mistral's speech-to-text) as alternative/complement to Gemini for transcription. Key features: speaker diarization, context biasing for domain terms, ~$0.001/min pricing. See [[../../03_Resources/AI/voxtral-kakitori-integration.md|voxtral research note]] for full details. Decision needed: test quality vs current Gemini setup before implementing.
+- **Notes**: Research Voxtral (Mistral's speech-to-text) as alternative/complement to Deepgram for transcription. Key features: speaker diarization, context biasing for domain terms, ~$0.001/min pricing. See [[../../03_Resources/AI/voxtral-kakitori-integration.md|voxtral research note]] for full details. Decision needed: test quality vs current Deepgram (nova-3) setup before implementing.
 
 ## Resolved Items
 

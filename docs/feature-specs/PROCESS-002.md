@@ -1,5 +1,11 @@
 # PROCESS-002: Multi-LLM Provider Support
 
+## Status Note (2026-07-10): Superseded, Not Implemented
+
+This feature was never implemented. Before it was picked up, the project decided to drop Gemini altogether and migrate the transcription backend directly to Deepgram's nova-3 model (single synchronous `client.listen.v1.media.transcribe_file(...)` call with `diarize=True`, `utterances=True`) instead of building the Gemini/OpenAI multi-provider abstraction described below. There is no provider abstraction layer, no `llm`/`llm-gemini` dependency, and no OpenAI transcription support in the codebase — `deepgram-sdk` is the sole transcription dependency, configured via `DEEPGRAM_API_KEY`.
+
+The rest of this document is preserved as-is for historical reference; it describes a design that was never built and does not reflect the current codebase.
+
 ## User Story
 
 As a kakitori user,

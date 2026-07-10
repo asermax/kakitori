@@ -246,14 +246,14 @@ def _play_page_snippets(
     input()
 
 
-def _show_main_menu(speaker_states: list[SpeakerState]) -> str | None:
+def _show_main_menu(speaker_states: list[SpeakerState]) -> str:
     """Display main menu and return selected value.
 
     Args:
         speaker_states: List of speaker states
 
     Returns:
-        Selected value: speaker label, "confirm", "cancel", or None if quit
+        Selected value: speaker label, "confirm", or "cancel"
     """
     _display_speakers_table(speaker_states)
 
@@ -274,7 +274,7 @@ def _show_main_menu(speaker_states: list[SpeakerState]) -> str | None:
     return questionary.select(
         "Select a speaker to identify:",
         choices=choices,
-    ).ask()
+    ).unsafe_ask()
 
 
 def _show_speaker_detail_menu(
@@ -317,15 +317,15 @@ def _show_speaker_detail_menu(
         choices.append(Choice("Assign name", value="assign"))
         choices.append(Choice("Back to main menu", value="back"))
 
-        result = questionary.select("Action:", choices=choices).ask()
+        result = questionary.select("Action:", choices=choices).unsafe_ask()
 
-        if result is None or result == "back":
+        if result == "back":
             return None
 
         if result == "play":
             num = questionary.text(
                 f"Enter segment number (1-{len(page_indices)}):",
-            ).ask()
+            ).unsafe_ask()
 
             if num and num.isdigit():
                 idx = int(num) - 1
@@ -349,7 +349,7 @@ def _show_speaker_detail_menu(
             name = questionary.text(
                 f"Who is {speaker_state.label}?",
                 default=default_name
-            ).ask()
+            ).unsafe_ask()
 
             if name and name.strip():
                 return name.strip()
@@ -383,21 +383,13 @@ def identify_speakers(
     while True:
         selection = _show_main_menu(speaker_states)
 
-        # User cancelled with Escape/Ctrl+C
-        if selection is None:
-            if questionary.confirm("Cancel identification? Generic labels will be kept.").ask():
-                logger.info("Speaker identification cancelled")
-                return {}
-            else:
-                continue
-
         # User selected "Confirm"
         if selection == "confirm":
             break
 
         # User selected "Cancel"
         if selection == "cancel":
-            if questionary.confirm("Cancel identification? Generic labels will be kept.").ask():
+            if questionary.confirm("Cancel identification? Generic labels will be kept.").unsafe_ask():
                 logger.info("Speaker identification cancelled")
                 return {}
             else:

@@ -47,7 +47,7 @@ python scripts/features.py status show FEATURE-ID         # Detailed view
 ### CORE-002: Migrate CLI from argparse to cyclopts
 **Status**: ✓ Defined
 **Complexity**: Easy
-**Description**: Replace argparse-based CLI with cyclopts for type-hint-driven argument parsing. Support two subcommands: `record` (with -o/--output, -v/--verbose) and `process` (with audio_file, -o/--output, --stdout, --skip-speaker-id, -p/--participants, -v/--verbose). Remove backwards compatibility for `kakitori <file>` syntax. Follows hayamimi pattern with `App` and `Annotated[Type, Parameter(...)]`.
+**Description**: Replace argparse-based CLI with cyclopts for type-hint-driven argument parsing. Support two subcommands: `record` (with -o/--output, -v/--verbose) and `process` (with audio_file, -o/--output, --stdout, --skip-speaker-id, -v/--verbose). Remove backwards compatibility for `kakitori <file>` syntax. Follows hayamimi pattern with `App` and `Annotated[Type, Parameter(...)]`.
 
 ---
 
@@ -65,12 +65,12 @@ python scripts/features.py status show FEATURE-ID         # Detailed view
 ### PROCESS-001: Audio Transcription Processing
 **Status**: ✓ Implementation
 **Complexity**: Hard
-**Description**: Transcribe audio with speaker diarization using Gemini, with interactive speaker identification and multi-turn processing
+**Description**: Transcribe audio with speaker diarization using Deepgram's nova-3 model, with interactive speaker identification, in a single request
 
 ### PROCESS-002: Multi-LLM Provider Support via llm Library
-**Status**: ✓ Design
+**Status**: Superseded (not implemented)
 **Complexity**: Hard
-**Description**: Replace direct Gemini API integration with Simon Willison's llm library to support multiple LLM providers (OpenAI, Anthropic, etc.) while defaulting to Gemini. Includes provider-specific file upload handling and graceful feature degradation for providers that don't support audio natively or structured outputs.
+**Description**: Originally planned to replace direct Gemini API integration with Simon Willison's llm library to support multiple LLM providers (OpenAI, Anthropic, etc.) while defaulting to Gemini. Superseded before implementation: the project dropped Gemini altogether and migrated directly to Deepgram's nova-3 model as the sole transcription backend, with no multi-provider abstraction. See [feature-specs/PROCESS-002.md](../feature-specs/PROCESS-002.md) for historical context.
 
 ---
 

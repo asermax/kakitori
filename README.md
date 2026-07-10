@@ -1,6 +1,6 @@
 # Kakitori
 
-CLI tool for audio recording and transcription with speaker diarization using Google's Gemini Flash.
+CLI tool for audio recording and transcription with speaker diarization using Deepgram's nova-3.
 
 ## Installation
 
@@ -12,10 +12,10 @@ Requires `mpv` and `pactl`/`ffmpeg` (for recording) installed on your system.
 
 ## Configuration
 
-Add your Gemini API key to `~/.config/kakitori/.env`:
+Add your Deepgram API key to `~/.config/kakitori/.env`:
 
 ```bash
-GEMINI_API_KEY=your-api-key-here
+DEEPGRAM_API_KEY=your-api-key-here
 ```
 
 ## Usage

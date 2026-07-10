@@ -2,7 +2,6 @@ import os
 import sys
 from pathlib import Path
 
-import questionary
 from dotenv import dotenv_values
 
 from kakitori.cli import parse_args
@@ -16,7 +15,7 @@ def _load_config() -> dict:
     """Load configuration from multiple sources.
 
     Returns:
-        Configuration dictionary with GEMINI_API_KEY
+        Configuration dictionary with DEEPGRAM_API_KEY
     """
     return {
         **dotenv_values(CONFIG_DIR / ".env"),
@@ -51,7 +50,7 @@ def _run_record_command(args) -> None:
 
     # Load config for optional transcription
     config = _load_config()
-    api_key = config.get("GEMINI_API_KEY")
+    api_key = config.get("DEEPGRAM_API_KEY")
 
     try:
         result = run_record(args.output, api_key=api_key)
@@ -75,31 +74,20 @@ def _run_process_command(args) -> None:
         args: Parsed command-line arguments
     """
     config = _load_config()
-    api_key = config.get("GEMINI_API_KEY")
+    api_key = config.get("DEEPGRAM_API_KEY")
 
     if api_key is None:
-        logger.error("GEMINI_API_KEY not found")
+        logger.error("DEEPGRAM_API_KEY not found")
         logger.error("\nSet it in one of these locations (in priority order):")
-        logger.error("  1. System environment: export GEMINI_API_KEY=your-key")
+        logger.error("  1. System environment: export DEEPGRAM_API_KEY=your-key")
         logger.error("  2. Local .env file in current directory")
         logger.error(f"  3. Global config: {CONFIG_DIR / '.env'}")
         logger.error("\nTo set up global config:")
         logger.error(f"  mkdir -p {CONFIG_DIR}")
-        logger.error(f"  echo 'GEMINI_API_KEY=your-key' > {CONFIG_DIR / '.env'}")
+        logger.error(f"  echo 'DEEPGRAM_API_KEY=your-key' > {CONFIG_DIR / '.env'}")
         sys.exit(1)
 
     from kakitori.process import run_process
-
-    # Prompt for participant count if not provided
-    participant_count = args.participants
-
-    if participant_count is None:
-        participant_count = int(
-            questionary.text(
-                "How many participants are in this recording?",
-                validate=lambda x: x.isdigit() and int(x) > 0,
-            ).ask()
-        )
 
     try:
         run_process(
@@ -108,7 +96,6 @@ def _run_process_command(args) -> None:
             output=args.output,
             stdout=args.stdout,
             skip_speaker_id=args.skip_speaker_id,
-            participant_count=participant_count,
         )
 
     except KeyboardInterrupt:

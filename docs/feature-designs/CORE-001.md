@@ -230,17 +230,7 @@ kakitori/
 
 ---
 
-### Decision 6: Participant Count Prompting in Entry Point
-
-**Choice**: Interactive prompt for participant count lives in `__init__.py` rather than process module.
-
-**Why**: The entry point handles all user interaction before delegating to command implementations. This keeps the process module focused on transcription logic.
-
-**Trade-off**: Places business logic in orchestration layer, but maintains clean separation where command modules are pure processing.
-
----
-
-### Decision 7: Actionable Error Messages
+### Decision 6: Actionable Error Messages
 
 **Choice**: Error messages include setup instructions, not just error descriptions.
 
@@ -277,8 +267,8 @@ Then: Exit code 130 (128 + SIGINT, Unix convention)
 ### Scenario: Global Config with Local Override
 
 ```
-Given: ~/.config/kakitori/.env has GEMINI_API_KEY=global-key
-And: ./.env has GEMINI_API_KEY=project-key
+Given: ~/.config/kakitori/.env has DEEPGRAM_API_KEY=global-key
+And: ./.env has DEEPGRAM_API_KEY=project-key
 When: Configuration is loaded
 Then: project-key is used (local overrides global)
 ```

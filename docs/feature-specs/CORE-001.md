@@ -41,11 +41,11 @@ The CLI infrastructure provides the entry point and orchestration layer for the 
   When the tool is invoked
   Then configuration values from the local file override global config values
 
-- Given an environment variable is set (e.g., `GEMINI_API_KEY`)
+- Given an environment variable is set (e.g., `DEEPGRAM_API_KEY`)
   When the tool is invoked
   Then the environment variable value takes highest priority over all file-based configs
 
-- Given `GEMINI_API_KEY` is not set in any configuration source
+- Given `DEEPGRAM_API_KEY` is not set in any configuration source
   When the `process` command is invoked
   Then an error message is displayed listing all configuration locations
   And the process exits with code 1
@@ -72,10 +72,6 @@ The CLI infrastructure provides the entry point and orchestration layer for the 
 - Given the user invokes `kakitori process file.mp3 --skip-speaker-id`
   When arguments are parsed
   Then `args.skip_speaker_id` is True
-
-- Given the user invokes `kakitori process file.mp3 -p 3`
-  When arguments are parsed
-  Then `args.participants` equals 3
 
 ### Backwards Compatibility
 
@@ -125,7 +121,7 @@ The CLI infrastructure provides the entry point and orchestration layer for the 
 
 - `argparse` (standard library) - Command-line argument parsing
 - `python-dotenv` - Loading .env files
-- `questionary` - Interactive prompts for participant count
+- `questionary` - Interactive prompts (speaker identification, source selection)
 
 ## Technical Notes
 

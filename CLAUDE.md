@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Quick Context
 
-Kakitori is a CLI tool for audio recording and transcription with speaker diarization using Google's Gemini Flash model.
+Kakitori is a CLI tool for audio recording and transcription with speaker diarization using Deepgram's nova-3 model.
 
 ## Key Files
 
@@ -48,10 +48,10 @@ All features are implemented. Use `/analyze` for gap analysis.
 
 ## Project Overview
 
-Kakitori is a CLI tool for audio recording and transcription with speaker diarization using Google's Gemini Flash model. It provides:
+Kakitori is a CLI tool for audio recording and transcription with speaker diarization using Deepgram's nova-3 model. It provides:
 - Audio recording from microphone and system audio (PulseAudio/PipeWire + ffmpeg)
 - Interactive workflow for speaker identification with audio snippet playback
-- Transcription using Google's Gemini Flash model
+- Transcription with speaker diarization using Deepgram's nova-3 model
 
 ## Command Line Interface
 
@@ -100,7 +100,7 @@ The tool supports multiple configuration sources with priority ordering:
 2. Local `.env` file in current directory
 3. Global config at `~/.config/kakitori/.env` (lowest priority)
 
-API key is required: `GEMINI_API_KEY=your-key`
+API key is required: `DEEPGRAM_API_KEY=your-key`
 
 ## Architecture
 
@@ -129,10 +129,11 @@ The codebase follows a modular command-based architecture in `src/kakitori/`:
    - `command.py`: Orchestrates transcription workflow (transcribe → identify speakers → format → save)
 
 5. **Transcription** (`transcribe.py`):
-   - Uploads audio to Gemini API
-   - Uses Gemini Flash with structured output (Pydantic schema) for JSON responses
-   - Currently configured: `gemini-flash-latest`, `max_output_tokens=65536` (supports ~2hr meetings)
-   - Returns `(Transcription, file_name)` tuple for cleanup
+   - Sends audio to Deepgram's prerecorded API in a single request
+   - Uses `nova-3` with `diarize=True, utterances=True, punctuate=True, detect_language=True`
+   - Maps Deepgram utterances (speaker index, start/end seconds, transcript) directly to
+     `TranscriptSegment`s
+   - Returns a `Transcription`
 
 6. **Speaker Identification** (`speaker.py`):
    - `identify_speakers()`: Interactive loop that plays audio snippets for each speaker
@@ -142,10 +143,11 @@ The codebase follows a modular command-based architecture in `src/kakitori/`:
 7. **Audio Playback** (`audio.py`):
    - Uses `python-mpv` library to play audio snippets
    - `parse_timestamp()`: Converts MM:SS format to seconds
+   - `format_timestamp()`: Converts seconds to MM:SS format (inverse of `parse_timestamp`)
    - `play_snippet()`: Plays audio from start_seconds for specified duration
 
 8. **Data Models** (`models.py`):
-   - Pydantic models used as structured output schema for Gemini API
+   - Pydantic models used to hold transcription results
    - `TranscriptSegment`: Single segment with start_time, speaker, content
    - `Transcription`: List of segments
 
@@ -163,17 +165,17 @@ The codebase follows a modular command-based architecture in `src/kakitori/`:
 - **Subcommand CLI**: Separate `record` and `process` commands with backwards compatibility
 - **Command Packages**: Each command has its own package (record/, process/) with command logic and helpers
 - **PulseAudio Combined Sink**: Uses temporary null sink with loopbacks to mix microphone and system audio at the audio server level, eliminating timestamp synchronization issues that occur with dual-source ffmpeg mixing
-- **Structured Output**: Uses Pydantic models with Gemini's `response_schema` parameter for reliable JSON parsing
+- **Server-Side Diarization**: Deepgram's prerecorded API returns speaker-labeled utterances in a single request, so there's no upload/poll/multi-turn lifecycle to manage
 - **Adaptive Snippets**: Speaker identification snippets adjust duration based on next segment to avoid overlap
-- **Interactive UI**: Uses questionary/rich for consistent interactive menus across speaker ID and source selection
+- **Interactive UI**: Uses questionary/rich for consistent interactive menus across speaker ID and source selection; prompts use `unsafe_ask()` so Ctrl+C raises `KeyboardInterrupt` and exits cleanly instead of being swallowed
 - **Config Priority**: Supports global config directory to avoid per-directory .env files while allowing local overrides
 - **Logging to stderr**: All logs go to stderr so `--stdout` flag can output clean transcript to stdout for piping
-- **Optional Transcription**: After recording, prompts user to transcribe immediately (requires GEMINI_API_KEY)
+- **Optional Transcription**: After recording, prompts user to transcribe immediately (requires DEEPGRAM_API_KEY)
 
 ## Dependencies
 
-- `google-genai`: Gemini API client
-- `pydantic`: Data validation and structured output schema
+- `deepgram-sdk`: Deepgram API client
+- `pydantic`: Data validation for transcription models
 - `python-dotenv`: Multi-source .env file loading
 - `python-mpv`: Audio playback (requires `mpv` system binary)
 

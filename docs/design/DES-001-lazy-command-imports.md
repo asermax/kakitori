@@ -12,7 +12,7 @@ Import command modules inside their handler functions rather than at module leve
 
 Different commands have different dependencies:
 - `record`: PulseAudio bindings, ffmpeg subprocess
-- `process`: Gemini API client, pydantic models
+- `process`: Deepgram API client, pydantic models
 
 Lazy imports provide:
 - Faster startup when using only one command

@@ -1,7 +1,13 @@
 # Design: PROCESS-002 - Multi-LLM Provider Support
 
 **Feature Spec**: [../feature-specs/PROCESS-002.md](../feature-specs/PROCESS-002.md)
-**Status**: Approved
+**Status**: Superseded (see note below) — never implemented
+
+## Superseded (2026-07-10)
+
+This design was approved but never implemented. Before work started, the project dropped Gemini altogether and moved the transcription backend directly to Deepgram's nova-3 model (a single synchronous prerecorded-API call), rather than building the Gemini/OpenAI provider abstraction described in this document. The codebase has no provider abstraction layer, no `llm`/`llm-gemini` dependency, and no OpenAI transcription support — `deepgram-sdk` is the sole transcription dependency.
+
+The rest of this document is preserved as-is for historical reference; it describes a design that was never built and does not reflect the current codebase.
 
 ---
 

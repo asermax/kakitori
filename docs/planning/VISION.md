@@ -38,8 +38,8 @@ A tool that records both audio sources, transcribes with speaker identification,
 
 **Trigger**: User runs `kakitori process <file>`
 **Steps**:
-1. Tool uploads audio to Gemini API
-2. Multi-turn transcription handles long recordings
+1. Tool sends audio to Deepgram's nova-3 model in a single request
+2. Deepgram returns diarized utterances for the entire recording at once
 3. Tool identifies unique speakers in transcript
 4. For each speaker, plays audio snippet from their first appearance
 5. User provides name for each speaker
@@ -67,8 +67,8 @@ All features are complete:
 - [x] Interactive source selection
 
 **Transcription:**
-- [x] Multi-turn AI transcription for long recordings (PROCESS-001)
-- [x] Speaker diarization via Gemini
+- [x] Single-request AI transcription, handles recordings of any length (PROCESS-001)
+- [x] Speaker diarization via Deepgram (nova-3)
 - [x] Interactive speaker identification with audio playback
 
 **CLI:**
@@ -88,14 +88,14 @@ Explicitly out of scope:
 
 **Features:**
 - [ ] Real-time transcription (post-recording only)
-- [ ] Multiple LLM backends (Gemini-only)
+- [ ] Multiple LLM backends (Deepgram-only)
 - [ ] Audio editing or trimming
 - [ ] Cloud storage integration
 
 ## Technical Context
 
 **Privacy & Security:**
-- Audio is uploaded to Google Gemini API for transcription
+- Audio is sent to the Deepgram API for transcription
 - API key stored in local config files
 - No persistent cloud storage of recordings
 
@@ -113,7 +113,7 @@ Explicitly out of scope:
 - Configuration via `.env` files
 
 **External Systems:**
-- Google Gemini API: Transcription with speaker diarization
+- Deepgram API (nova-3 model): Transcription with speaker diarization
 - PulseAudio/PipeWire: Audio source management and recording
 - ffmpeg: Audio encoding
 - mpv: Audio playback for speaker identification
@@ -123,8 +123,8 @@ Explicitly out of scope:
 - No GPU requirements
 
 **Dependencies (key):**
-- `google-genai`: Gemini API client
-- `pydantic`: Data validation and structured output
+- `deepgram-sdk`: Deepgram API client
+- `pydantic`: Data validation for internal transcription models
 - `questionary`: Interactive prompts
 - `rich`: Terminal formatting
 - `python-mpv`: Audio playback
@@ -132,7 +132,7 @@ Explicitly out of scope:
 
 **Setup Requirements:**
 - System: ffmpeg, pactl, mpv binaries
-- Configuration: `GEMINI_API_KEY` in environment or `.env` file
+- Configuration: `DEEPGRAM_API_KEY` in environment or `.env` file
 
 ## Success Criteria
 

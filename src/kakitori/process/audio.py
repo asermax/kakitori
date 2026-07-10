@@ -24,6 +24,25 @@ def parse_timestamp(timestamp: str) -> float:
         raise ValueError(f"Invalid timestamp format: {timestamp}")
 
 
+def format_timestamp(seconds: float) -> str:
+    """Convert seconds to 'MM:SS' or 'HH:MM:SS' timestamp format.
+
+    Args:
+        seconds: Total seconds
+
+    Returns:
+        Time formatted as 'MM:SS', or 'HH:MM:SS' if an hour or more
+    """
+    total_seconds = int(seconds)
+    hours, remainder = divmod(total_seconds, 3600)
+    minutes, secs = divmod(remainder, 60)
+
+    if hours > 0:
+        return f"{hours:02d}:{minutes:02d}:{secs:02d}"
+
+    return f"{minutes:02d}:{secs:02d}"
+
+
 def play_snippet(
     audio_path: str,
     start_seconds: float,
@@ -38,8 +57,10 @@ def play_snippet(
     """
     player = mpv.MPV()
 
-    player.start = start_seconds
-    player.end = start_seconds + duration
-    player.play(audio_path)
-    player.wait_for_playback()
-    player.terminate()
+    try:
+        player.start = start_seconds
+        player.end = start_seconds + duration
+        player.play(audio_path)
+        player.wait_for_playback()
+    finally:
+        player.terminate()

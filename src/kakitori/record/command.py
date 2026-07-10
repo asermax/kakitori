@@ -21,7 +21,7 @@ def run_record(output: str | None, api_key: str | None = None) -> Path | None:
 
     Args:
         output: Custom output path or None (will prompt)
-        api_key: Gemini API key for optional transcription
+        api_key: Deepgram API key for optional transcription
 
     Returns:
         Path to recorded file if successful, None otherwise
@@ -59,11 +59,6 @@ def run_record(output: str | None, api_key: str | None = None) -> Path | None:
         input_source,
         monitor_source,
     )
-
-    # User cancelled
-    if input_source is None or monitor_source is None:
-        logger.info("Recording cancelled")
-        return None
 
     # Determine output path
     if output is not None:
@@ -115,18 +110,10 @@ def run_record(output: str | None, api_key: str | None = None) -> Path | None:
         should_transcribe = questionary.confirm(
             "Transcribe the recording now?",
             default=False,
-        ).ask()
+        ).unsafe_ask()
 
         if should_transcribe:
             from kakitori.process import run_process
-
-            # Prompt for participant count
-            participant_count = int(
-                questionary.text(
-                    "How many participants are in this recording?",
-                    validate=lambda x: x.isdigit() and int(x) > 0,
-                ).ask()
-            )
 
             logger.info("\nStarting transcription...")
 
@@ -136,7 +123,6 @@ def run_record(output: str | None, api_key: str | None = None) -> Path | None:
                 output=None,
                 stdout=False,
                 skip_speaker_id=False,
-                participant_count=participant_count,
             )
 
     return output_path
